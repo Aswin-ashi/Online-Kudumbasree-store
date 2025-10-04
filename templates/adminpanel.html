@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Kudumbasree</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7c7c7;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        /* Ensure table layout is consistent */
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800 antialiased">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gray-50 border-r border-gray-200 flex-col p-4 hidden md:flex">
+            <div class="text-2xl font-bold text-[#87267e] mb-10 text-center">
+                Admin Panel
+            </div>
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#customers" class="nav-link active-link flex items-center p-3 rounded-lg text-gray-700 hover:bg-[#87267e] hover:text-white transition-colors duration-200" data-target="customers-section">
+                            <i class="fas fa-users w-6 text-center"></i>
+                            <span class="ml-4 font-medium">Customers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#sellers" class="nav-link flex items-center p-3 rounded-lg text-gray-700 hover:bg-[#87267e] hover:text-white transition-colors duration-200" data-target="sellers-section">
+                            <i class="fas fa-store w-6 text-center"></i>
+                            <span class="ml-4 font-medium">Sellers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#approval" class="nav-link flex items-center p-3 rounded-lg text-gray-700 hover:bg-[#87267e] hover:text-white transition-colors duration-200" data-target="approval-section">
+                            <i class="fas fa-user-check w-6 text-center"></i>
+                            <span class="ml-4 font-medium">Seller Approval</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}" class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-red-500 hover:text-white transition-colors duration-200 mt-8">
+                            <i class="fas fa-sign-out-alt w-6 text-center"></i>
+                            <span class="ml-4 font-medium">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10 bg-white">
+             {% if messages %}
+                <div class="p-4">
+                    {% for message in messages %}
+                        <div class="auto-dismiss-alert p-3 rounded-lg text-center text-sm font-medium
+                            {% if message.tags == 'success' %} bg-green-100 text-green-800 {% endif %}
+                            {% if message.tags == 'error' %} bg-red-100 text-red-800 {% endif %}
+                            {% if message.tags == 'info' %} bg-blue-100 text-blue-800 {% endif %}"
+                            role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Mobile Header -->
+            <header class="md:hidden flex justify-between items-center mb-6">
+                 <h1 class="text-2xl font-bold text-[#87267e]">Admin Panel</h1>
+                 <button id="mobile-menu-btn" class="p-2">
+                     <i class="fas fa-bars text-2xl"></i>
+                 </button>
+            </header>
+            
+            <!-- Mobile Navigation (hidden by default) -->
+            <div id="mobile-menu" class="md:hidden hidden mb-6">
+                 <nav>
+                    <ul class="space-y-2">
+                         <li><a href="#customers" class="nav-link-mobile block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="customers-section">Customers</a></li>
+                         <li><a href="#sellers" class="nav-link-mobile block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="sellers-section">Sellers</a></li>
+                         <li><a href="#approval" class="nav-link-mobile block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="approval-section">Seller Approval</a></li>
+                         <li><a href="{% url 'logout' %}" class="block p-3 rounded-lg hover:bg-red-500 hover:text-white mt-4">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+
+            <!-- Customer Section -->
+            <section id="customers-section" class="content-section">
+                <h2 class="text-3xl font-bold text-gray-700 mb-6">Manage Customers</h2>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="p-4 font-semibold text-gray-600 w-1/5">Name</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5">Username</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5 hidden sm:table-cell">Phone</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5 hidden lg:table-cell">Address</th>
+                                <th class="p-4 font-semibold text-gray-600 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="p-4 truncate">{{ customer.name }}</td>
+                                <td class="p-4 truncate">{{ customer.username }}</td>
+                                <td class="p-4 hidden sm:table-cell">{{ customer.phone }}</td>
+                                <td class="p-4 truncate hidden lg:table-cell">{{ customer.address }}</td>
+                                <td class="p-4 text-center">
+                                    <a href="{% url 'delete_customer' customer.id %}" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this customer?');">
+                                        <i class="fas fa-trash-alt"></i> <span class="hidden sm:inline">Delete</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center p-8 text-gray-500">No customers found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Seller Section -->
+            <section id="sellers-section" class="content-section hidden">
+                <h2 class="text-3xl font-bold text-gray-700 mb-6">Manage Sellers</h2>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 overflow-x-auto">
+                    <table class="w-full text-left">
+                         <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="p-4 font-semibold text-gray-600 w-1/5">Name</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5">Username</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5">Password</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5 hidden sm:table-cell">Phone</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/5 hidden lg:table-cell">Kudumbasree Details</th>
+                                <th class="p-4 font-semibold text-gray-600 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for seller in approved_sellers %}
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="p-4 truncate">{{ seller.name }}</td>
+                                <td class="p-4 truncate">{{ seller.username }}</td>
+                                <td class="p-4 truncate">{{ seller.password }}</td>
+                                <td class="p-4 hidden sm:table-cell">{{ seller.phone }}</td>
+                                <td class="p-4 truncate hidden lg:table-cell">{{ seller.kudumbasree_details }}</td>
+                                <td class="p-4 text-center">
+                                     <a href="{% url 'delete_seller' seller.id %}" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this seller?');">
+                                        <i class="fas fa-trash-alt"></i> <span class="hidden sm:inline">Delete</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center p-8 text-gray-500">No approved sellers found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Seller Approval Section -->
+            <section id="approval-section" class="content-section hidden">
+                <h2 class="text-3xl font-bold text-gray-700 mb-6">Seller Approval Requests</h2>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                           <tr class="border-b-2 border-gray-200">
+                                <th class="p-4 font-semibold text-gray-600 w-1/4">Name</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/4">Username</th>
+                                <th class="p-4 font-semibold text-gray-600 w-1/4 hidden sm:table-cell">Passbook</th>
+                                <th class="p-4 font-semibold text-gray-600 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for seller in pending_sellers %}
+                            <tr class="border-b border-gray-100">
+                                <td class="p-4 truncate">{{ seller.name }}</td>
+                                <td class="p-4 truncate">{{ seller.username }}</td>
+                                <td class="p-4 hidden sm:table-cell">
+                                    <a href="{{ seller.passbook.url }}" target="_blank" class="text-[#87267e] hover:underline">View Passbook</a>
+                                </td>
+                                <td class="p-4 text-center space-x-2">
+                                    <a href="{% url 'approve_seller' seller.id %}" class="bg-green-500 text-white px-3 py-2 text-sm rounded-md hover:bg-green-600">Accept</a>
+                                    <a href="{% url 'reject_seller' seller.id %}" class="bg-red-500 text-white px-3 py-2 text-sm rounded-md hover:bg-red-600">Reject</a>
+                                </td>
+                            </tr>
+                           {% empty %}
+                            <tr>
+                               <td colspan="4" class="text-center p-8 text-gray-500">No pending seller requests.</td>
+                            </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileNavLinks = document.querySelectorAll('.nav-link-mobile');
+            const contentSections = document.querySelectorAll('.content-section');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            function switchTab(targetId) {
+                // Hide all sections
+                contentSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // Show the target section
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+
+                // Update active styles for desktop sidebar
+                navLinks.forEach(link => {
+                    if (link.dataset.target === targetId) {
+                        link.classList.add('active-link', 'bg-[#87267e]', 'text-white');
+                    } else {
+                        link.classList.remove('active-link', 'bg-[#87267e]', 'text-white');
+                    }
+                });
+                
+                // Close mobile menu on selection
+                mobileMenu.classList.add('hidden');
+            }
+
+            // Event listeners for desktop sidebar links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    window.location.hash = event.currentTarget.getAttribute('href');
+                    switchTab(link.dataset.target);
+                });
+            });
+
+            // Event listeners for mobile menu links
+            mobileNavLinks.forEach(link => {
+                 link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    window.location.hash = event.currentTarget.getAttribute('href');
+                    switchTab(link.dataset.target);
+                });
+            });
+
+            // Event listener for mobile menu toggle button
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Function to handle hash changes
+            function handleHashChange() {
+                const hash = window.location.hash || '#customers';
+                const targetId = hash.substring(1) + '-section';
+                switchTab(targetId);
+            }
+            
+            // Handle initial page load and hash changes
+            window.addEventListener('hashchange', handleHashChange);
+            handleHashChange(); // For initial load
+        });
+
+         // --- MESSAGE TIMER LOGIC ---
+        // This function runs when the page has finished loading
+        document.addEventListener('DOMContentLoaded', () => {
+            // Find all elements with the 'auto-dismiss-alert' class
+            const alerts = document.querySelectorAll('.auto-dismiss-alert');
+        
+            // Loop through each alert
+            alerts.forEach(alert => {
+                // Set a timer to hide the alert after 5 seconds (5000ms)
+                setTimeout(() => {
+                    // Start the fade-out effect
+                    alert.style.opacity = '0';
+                    
+                    // After the fade-out transition completes, set display to none
+                    // The timeout duration should match the CSS transition duration
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 500); // 0.5 seconds
+                }, 2000); // 2 seconds
+            });
+        });
+    </script>
+    </script>
+</body>
+</html>
+
