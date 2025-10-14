@@ -1,14 +1,12 @@
 from django.db import models
 
-# Create your models here.
-
 # --- Customer / user Model ---
 
 class Customer(models.Model):
     """Stores customer details."""
     name = models.CharField(max_length=30)
     username = models.CharField(max_length=25, unique=True)
-    password = models.CharField(max_length=25)
+    password = models.CharField(max_length=128) 
     address = models.CharField(max_length=60)
     email = models.EmailField(unique=True) 
     phone = models.CharField(max_length=20)
@@ -24,7 +22,7 @@ class Seller(models.Model):
     """Stores seller details, including an approval status."""
     name = models.CharField(max_length=30)
     username = models.CharField(max_length=25, unique=True)
-    password = models.CharField(max_length=25)
+    password = models.CharField(max_length=128) # Increased size for hashed passwords
     address = models.CharField(max_length=60)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
@@ -50,17 +48,70 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
-# --- Order model ---
+# --- CartItem model ---
+
+class CartItem(models.Model):
+    """Represents an item in a user's shopping cart."""
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE) # Linked to your Customer model
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.product_name} for {self.customer.name}"
+
+    @property
+    def total_price(self):
+        return self.quantity * self.product.price
+
+# --- Order Models ---
+
 
 class Order(models.Model):
-    """Stores order details, linked to a customer and a product."""
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('Cancelled', 'Cancelled'),
+    ]
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order_date = models.DateTimeField(auto_now_add=True)
-    is_confirmed = models.BooleanField(default=False)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     
+    # Address details captured at the time of order
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=10)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+
     def __str__(self):
-        return f"Order #{self.id} by {self.customer.name}"
+        return f"Order {self.id} by {self.customer.name}"
+    
+class OrderItem(models.Model):
+    """Stores details for a single product within an order."""
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.product_name}"
+
+class Payment(models.Model):
+    """Stores details of a successful payment."""
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    razorpay_payment_id = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment {self.razorpay_payment_id} for Order {self.order.id}"
+
 
 class Feedback(models.Model):
     """Stores feedback from customers about sellers."""
@@ -71,3 +122,4 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback from {self.customer.name} to {self.seller.name}"
+
