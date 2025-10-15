@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#6a1b9a">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
     <title>Admin Panel - Kudumbasree</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,6 +39,10 @@
             table-layout: fixed;
             width: 100%;
         }
+        .active-link {
+            background-color: #87267e;
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-800 antialiased">
@@ -45,12 +51,15 @@
         <!-- Sidebar Navigation -->
         <aside class="w-64 bg-gray-50 border-r border-gray-200 flex-col p-4 hidden md:flex">
             <div class="text-2xl font-bold text-[#87267e] mb-10 text-center">
-                Admin Panel
+                <a href="{% url 'admin_dashboard' %}" class="flex items-center space-x-2 text-2xl font-bold text-primary">
+                <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12">
+                <span>Admin Panel</span>
+                </a>
             </div>
             <nav>
                 <ul class="space-y-2">
                     <li>
-                        <a href="#customers" class="nav-link active-link flex items-center p-3 rounded-lg text-gray-700 hover:bg-[#87267e] hover:text-white transition-colors duration-200" data-target="customers-section">
+                        <a href="#customers" class="nav-link flex items-center p-3 rounded-lg text-gray-700 hover:bg-[#87267e] hover:text-white transition-colors duration-200" data-target="customers-section">
                             <i class="fas fa-users w-6 text-center"></i>
                             <span class="ml-4 font-medium">Customers</span>
                         </a>
@@ -67,6 +76,12 @@
                             <span class="ml-4 font-medium">Seller Approval</span>
                         </a>
                     </li>
+                 <li><a href="#community" class="nav-link flex items-center p-3 rounded-lg text-gray-700" data-target="community-section">
+                    <i class="fas fa-bullhorn w-6 text-center"></i>
+                    <span class="ml-4 font-medium">Community Post</span>
+                </a>
+            </li>
+
                     <li>
                         <a href="{% url 'logout' %}" class="flex items-center p-3 rounded-lg text-gray-700 hover:bg-red-500 hover:text-white transition-colors duration-200 mt-8">
                             <i class="fas fa-sign-out-alt w-6 text-center"></i>
@@ -79,12 +94,12 @@
 
         <!-- Main Content -->
         <main class="flex-1 p-6 md:p-10 bg-white">
-             {% if messages %}
-                <div class="p-4">
+            {% if messages %}
+                <div class="p-4 space-y-2">
                     {% for message in messages %}
-                        <div class="auto-dismiss-alert p-3 rounded-lg text-center text-sm font-medium
+                        <div class="auto-dismiss-alert p-3 rounded-lg text-center text-sm font-medium transition-opacity duration-500
                             {% if message.tags == 'success' %} bg-green-100 text-green-800 {% endif %}
-                            {% if message.tags == 'error' %} bg-red-100 text-red-800 {% endif %}
+                            {% if message.tags == 'error' or message.tags == 'warning' %} bg-red-100 text-red-800 {% endif %}
                             {% if message.tags == 'info' %} bg-blue-100 text-blue-800 {% endif %}"
                             role="alert">
                             {{ message }}
@@ -102,20 +117,21 @@
             </header>
             
             <!-- Mobile Navigation (hidden by default) -->
-            <div id="mobile-menu" class="md:hidden hidden mb-6">
+            <div id="mobile-nav-menu" class="md:hidden hidden mb-6">
                  <nav>
-                    <ul class="space-y-2">
-                         <li><a href="#customers" class="nav-link-mobile block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="customers-section">Customers</a></li>
-                         <li><a href="#sellers" class="nav-link-mobile block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="sellers-section">Sellers</a></li>
-                         <li><a href="#approval" class="nav-link-mobile block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="approval-section">Seller Approval</a></li>
+                     <ul class="space-y-2">
+                         <li><a href="#customers" class="nav-link block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="customers-section">Customers</a></li>
+                         <li><a href="#sellers" class="nav-link block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="sellers-section">Sellers</a></li>
+                         <li><a href="#approval" class="nav-link block p-3 rounded-lg hover:bg-[#87267e] hover:text-white" data-target="approval-section">Seller Approval</a></li>
+                         <li><a href="#community" class="nav-link flex items-center p-3 rounded-lg text-gray-700" data-target="community-section"><i class="fas fa-bullhorn w-6 text-center"></i><span class="ml-4 font-medium">Community Post</span></a></li>
                          <li><a href="{% url 'logout' %}" class="block p-3 rounded-lg hover:bg-red-500 hover:text-white mt-4">Logout</a></li>
-                    </ul>
-                </nav>
+                     </ul>
+                 </nav>
             </div>
             
 
             <!-- Customer Section -->
-            <section id="customers-section" class="content-section">
+            <section id="customers-section" class="content-section hidden">
                 <h2 class="text-3xl font-bold text-gray-700 mb-6">Manage Customers</h2>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 overflow-x-auto">
                     <table class="w-full text-left">
@@ -156,11 +172,10 @@
                 <h2 class="text-3xl font-bold text-gray-700 mb-6">Manage Sellers</h2>
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 overflow-x-auto">
                     <table class="w-full text-left">
-                         <thead>
+                          <thead>
                             <tr class="border-b-2 border-gray-200">
                                 <th class="p-4 font-semibold text-gray-600 w-1/5">Name</th>
                                 <th class="p-4 font-semibold text-gray-600 w-1/5">Username</th>
-                                <th class="p-4 font-semibold text-gray-600 w-1/5">Password</th>
                                 <th class="p-4 font-semibold text-gray-600 w-1/5 hidden sm:table-cell">Phone</th>
                                 <th class="p-4 font-semibold text-gray-600 w-1/5 hidden lg:table-cell">Kudumbasree Details</th>
                                 <th class="p-4 font-semibold text-gray-600 text-center">Actions</th>
@@ -171,7 +186,6 @@
                             <tr class="border-b border-gray-100 hover:bg-gray-50">
                                 <td class="p-4 truncate">{{ seller.name }}</td>
                                 <td class="p-4 truncate">{{ seller.username }}</td>
-                                <td class="p-4 truncate">{{ seller.password }}</td>
                                 <td class="p-4 hidden sm:table-cell">{{ seller.phone }}</td>
                                 <td class="p-4 truncate hidden lg:table-cell">{{ seller.kudumbasree_details }}</td>
                                 <td class="p-4 text-center">
@@ -224,18 +238,118 @@
                         </tbody>
                     </table>
                 </div>
+                <div id="update-post-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-30 p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg">
+            <h3 class="text-xl font-bold mb-4">Update Post</h3>
+            <form id="update-post-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div>
+                        <label for="update_description" class="block text-sm font-medium">Description</label>
+                        <textarea name="description" id="update_description" rows="4" class="w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                    </div>
+                    <div>
+                        <label for="update_image" class="block text-sm font-medium">Replace Image (optional)</label>
+                        <input type="file" name="image" id="update_image" class="w-full">
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" id="cancel-update-btn" class="bg-gray-200 py-2 px-4 rounded-lg">Cancel</button>
+                        <button type="submit" class="bg-[#87267e] text-white py-2 px-4 rounded-lg">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
             </section>
+
+            <section id="community-section" class="content-section hidden">
+    <h2 class="text-3xl font-bold text-gray-700 mb-6">Community Posts</h2>
+
+    <!-- Create New Post -->
+    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8">
+        <h3 class="text-xl font-semibold mb-4">Create New Post</h3>
+        <form action="{% url 'add_post' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea name="description" id="description" rows="4" class="w-full border-gray-300 rounded-md shadow-sm"></textarea>
+            </div>
+            <div>
+                <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+                <input type="file" name="image" id="image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+            </div>
+            <div class="text-right">
+                <button type="submit" class="bg-[#87267e] text-white font-semibold py-2 px-6 rounded-lg">Post</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Posts List -->
+    <div class="space-y-4">
+        {% for post in posts %}
+        <div class="bg-white p-4 rounded-lg shadow-md border">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image" class="w-full h-64 object-cover rounded-lg mb-4">
+            {% endif %}
+            {% if post.description %}
+            <pre class="text-gray-700 mb-4 whitespace-pre-wrap">{{ post.description }}</pre>
+            {% endif %}
+            <div class="flex justify-between items-center text-sm text-gray-500">
+                <span>{{ post.created_at|date:"F d, Y" }}</span>
+                <div class="space-x-4">
+                    <!-- <a href="javascript:void(0);" 
+                        class="update-post-btn text-blue-500 hover:underline"
+                        data-id="{{ post.id }}"
+                        data-description="{{ post.description }}"
+                        data-action="{% url 'update_post' post.id %}">
+                        Edit
+                        </a> -->
+
+                    <a href="{% url 'delete_post' post.id %}" class="text-red-500 hover:underline" onclick="return confirm('Are you sure?')">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-500">No community posts yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Update Post Modal -->
+<!-- <div id="update-post-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg">
+        <h3 class="text-xl font-bold mb-4">Update Post</h3>
+        <form id="update-post-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label for="update_description" class="block text-sm font-medium">Description</label>
+                    <textarea name="description" id="update_description" rows="6" class="w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label for="update_image" class="block text-sm font-medium">Replace Image (optional)</label>
+                    <input type="file" name="image" id="update_image" class="w-full">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="cancel-update-btn" class="bg-gray-200 py-2 px-4 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-[#87267e] text-white py-2 px-4 rounded-lg">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> -->
+
 
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const mobileNavLinks = document.querySelectorAll('.nav-link-mobile');
+            const allNavLinks = document.querySelectorAll('.nav-link');
             const contentSections = document.querySelectorAll('.content-section');
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenu = document.getElementById('mobile-nav-menu');
 
             function switchTab(targetId) {
                 // Hide all sections
@@ -249,12 +363,12 @@
                     targetSection.classList.remove('hidden');
                 }
 
-                // Update active styles for desktop sidebar
-                navLinks.forEach(link => {
+                // Update active link styles for all nav links
+                allNavLinks.forEach(link => {
                     if (link.dataset.target === targetId) {
-                        link.classList.add('active-link', 'bg-[#87267e]', 'text-white');
+                        link.classList.add('active-link');
                     } else {
-                        link.classList.remove('active-link', 'bg-[#87267e]', 'text-white');
+                        link.classList.remove('active-link');
                     }
                 });
                 
@@ -262,64 +376,48 @@
                 mobileMenu.classList.add('hidden');
             }
 
-            // Event listeners for desktop sidebar links
-            navLinks.forEach(link => {
+            allNavLinks.forEach(link => {
                 link.addEventListener('click', (event) => {
                     event.preventDefault();
-                    window.location.hash = event.currentTarget.getAttribute('href');
-                    switchTab(link.dataset.target);
+                    const targetId = event.currentTarget.dataset.target;
+                    window.location.hash = targetId; // Update hash to preserve state
+                    switchTab(targetId);
                 });
             });
 
-            // Event listeners for mobile menu links
-            mobileNavLinks.forEach(link => {
-                 link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    window.location.hash = event.currentTarget.getAttribute('href');
-                    switchTab(link.dataset.target);
-                });
-            });
-
-            // Event listener for mobile menu toggle button
+            // Toggle mobile menu
             mobileMenuBtn.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
             
-            // Function to handle hash changes
+            // Function to handle hash changes on page load or back/forward
             function handleHashChange() {
-                const hash = window.location.hash || '#customers';
-                const targetId = hash.substring(1) + '-section';
+                const hash = window.location.hash.substring(1);
+                // Default to 'customers-section' if no hash is present
+                const targetId = hash ? hash : 'customers-section';
                 switchTab(targetId);
             }
             
             // Handle initial page load and hash changes
             window.addEventListener('hashchange', handleHashChange);
             handleHashChange(); // For initial load
-        });
 
-         // --- MESSAGE TIMER LOGIC ---
-        // This function runs when the page has finished loading
-        document.addEventListener('DOMContentLoaded', () => {
-            // Find all elements with the 'auto-dismiss-alert' class
+            // --- MESSAGE TIMER LOGIC ---
             const alerts = document.querySelectorAll('.auto-dismiss-alert');
-        
-            // Loop through each alert
             alerts.forEach(alert => {
-                // Set a timer to hide the alert after 5 seconds (5000ms)
                 setTimeout(() => {
-                    // Start the fade-out effect
+                    alert.style.transition = 'opacity 0.5s ease';
                     alert.style.opacity = '0';
-                    
-                    // After the fade-out transition completes, set display to none
-                    // The timeout duration should match the CSS transition duration
                     setTimeout(() => {
                         alert.style.display = 'none';
-                    }, 500); // 0.5 seconds
-                }, 2000); // 2 seconds
+                    }, 500);
+                }, 2000);
             });
         });
-    </script>
+
+    
+    
+
     </script>
 </body>
 </html>
-

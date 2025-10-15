@@ -112,6 +112,15 @@ class Payment(models.Model):
     def __str__(self):
         return f"Payment {self.razorpay_payment_id} for Order {self.order.id}"
 
+# --- Community Post Model ---
+class CommunityPost(models.Model):
+    """Stores community posts created by the admin."""
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='community_posts/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Post {self.id} on {self.created_at.date()}"
 
 class Feedback(models.Model):
     """Stores feedback from customers about sellers."""

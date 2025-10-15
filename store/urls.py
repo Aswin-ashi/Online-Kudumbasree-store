@@ -50,6 +50,10 @@ urlpatterns = [
     path('admin/seller/delete/<int:seller_id>/', views.delete_seller, name='delete_seller'),
     path('admin/seller/approve/<int:seller_id>/', views.approve_seller, name='approve_seller'),
     path('admin/seller/reject/<int:seller_id>/', views.reject_seller, name='reject_seller'),
+    path('admin/post/add/', views.add_post, name='add_post'),
+    path('admin/post/update/<int:post_id>/', views.update_post, name='update_post'),
+    path('admin/post/delete/<int:post_id>/', views.delete_post, name='delete_post'),
+
 
     #--- Seller Panel URLs ---
     path('seller/dashboard/', views.seller_dashboard, name='seller_dashboard'),

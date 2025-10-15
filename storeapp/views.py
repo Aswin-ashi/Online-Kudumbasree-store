@@ -1,6 +1,6 @@
 import os
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Customer, Seller, CartItem, Product, Feedback, Order, OrderItem, Payment
+from .models import Customer, Seller, CartItem, Product, Feedback, Order, OrderItem, Payment, CommunityPost
 from django.contrib import messages
 from decimal import Decimal
 from django.core.paginator import Paginator
@@ -8,11 +8,15 @@ from django.db.models import Q, Prefetch
 
 # --- Helper Functions ---
 def get_logged_in_user(request):
-    """Return (user_type, user_instance) or (None, None) if not logged in."""
     user_type = request.session.get('user_type')
     user_id = request.session.get('user_id')
+
+    if user_type == 'admin':
+        return 'admin', None
+
     if not user_id:
         return None, None
+
     if user_type == 'customer':
         try:
             return 'customer', Customer.objects.get(id=user_id)
@@ -23,9 +27,8 @@ def get_logged_in_user(request):
             return 'seller', Seller.objects.get(id=user_id)
         except Seller.DoesNotExist:
             return None, None
-    elif user_type == 'admin':
-        return 'admin', None
     return None, None
+
 
 def get_cart_context(customer):
     """Helper to get cart items and count for a logged-in customer."""
@@ -111,11 +114,15 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        # --- Admin Login ---
         if username == 'admin' and password == 'adminpass':
             request.session['user_type'] = 'admin'
+            request.session['user_id'] = 0   # Add this line
+            request.session.modified = True
             messages.success(request, 'Welcome Admin!')
             return redirect('admin_dashboard')
 
+        # --- Customer Login ---
         try:
             customer = Customer.objects.get(username=username)
             if password == customer.password:
@@ -126,6 +133,7 @@ def login_view(request):
         except Customer.DoesNotExist:
             pass
 
+        # --- Seller Login ---
         try:
             seller = Seller.objects.get(username=username, is_approved=True)
             if password == seller.password:
@@ -142,6 +150,7 @@ def login_view(request):
     return render(request, 'login.html')
 
 
+
 def logout_view(request):
     request.session.flush()
     messages.success(request, "Logged out successfully.")
@@ -150,21 +159,25 @@ def logout_view(request):
 
 # --- Admin Views ---
 def admin_dashboard(request):
-    # ... (view logic remains the same)
     user_type, _ = get_logged_in_user(request)
+
+    # Only admin can access
     if user_type != 'admin':
         messages.warning(request, "Admin access only.")
-        return redirect('customer_dashboard')
+        return redirect('login')
 
     customers = Customer.objects.all()
     approved_sellers = Seller.objects.filter(is_approved=True)
     pending_sellers = Seller.objects.filter(is_approved=False)
+    post = CommunityPost.objects.all()
     context = {
         'customers': customers,
         'approved_sellers': approved_sellers,
-        'pending_sellers': pending_sellers
+        'pending_sellers': pending_sellers,
+        'posts' : post,
     }
     return render(request, 'adminpanel.html', context)
+
 
 
 def delete_customer(request, customer_id):
@@ -197,6 +210,40 @@ def reject_seller(request, seller_id):
     seller = get_object_or_404(Seller, id=seller_id)
     seller.delete()
     messages.warning(request, f'Seller "{seller.name}" rejected.')
+    return redirect('admin_dashboard')
+
+def add_post(request):
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        image = request.FILES.get('image')
+
+        # Validate that at least one field is provided
+        if not description and not image:
+            messages.error(request, "You must provide a description, an image, or both.")
+            return redirect('admin_dashboard')
+
+        CommunityPost.objects.create(description=description, image=image)
+        messages.success(request, "Community post created successfully.")
+    return redirect('admin_dashboard')
+
+def update_post(request, post_id):
+    post = get_object_or_404(CommunityPost, id=post_id)
+
+    if request.method == "POST":
+        description = request.POST.get('description', '')
+        if 'image' in request.FILES:
+            post.image = request.FILES['image']
+        post.description = description
+        post.save()
+        messages.success(request, "Post updated successfully.")
+        return redirect('admin_dashboard')
+
+    return redirect('admin_dashboard')
+
+def delete_post(request, post_id):
+    post = get_object_or_404(CommunityPost, id=post_id)
+    post.delete()
+    messages.success(request, "Post deleted successfully.")
     return redirect('admin_dashboard')
 
 
@@ -315,7 +362,7 @@ def delete_feedback(request, feedback_id):
 # --- Customer Views ---
 
 def customer_dashboard(request):
-    products = Product.objects.filter(seller__is_approved=True)
+    products = Product.objects.filter(seller__is_approved=True).order_by('-id')[:12]
     user_type, customer = get_logged_in_user(request)
     
     cart_data = get_cart_context(customer)
@@ -508,7 +555,8 @@ def about(request):
 def community(request):
     user_type, customer = get_logged_in_user(request)
     cart_data = get_cart_context(customer)
-    return render(request, 'community.html', {'cart_item_count': cart_data['cart_item_count']})
+    post = CommunityPost.objects.all()
+    return render(request, 'community.html', {'cart_item_count': cart_data['cart_item_count'],'post':post})
 
 
 def my_orders(request):

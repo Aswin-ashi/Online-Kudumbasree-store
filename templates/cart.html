@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#6a1b9a">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
     <title>Shopping Cart - Kudumbashree Online Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,12 +43,23 @@
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
-                <a href="{% url 'customer_dashboard' %}" class="text-2xl font-bold text-primary">Kudumbashree Store</a>
+                <a href="{% url 'customer_dashboard' %}" class="flex items-center space-x-2 text-2xl font-bold text-primary">
+                <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12">
+                <span>Online Kudumbashree Store</span>
+                </a>
                 <nav class="hidden md:flex items-center space-x-6">
                     <a href="{% url 'customer_dashboard' %}" class="text-gray-600 hover:text-primary transition">Home</a>
                     <a href="{% url 'products' %}" class="text-gray-600 hover:text-primary transition">Products</a>
                     <a href="{% url 'community' %}" class="text-gray-600 hover:text-primary transition">Community</a>
                     <a href="{% url 'about' %}" class="text-gray-600 hover:text-primary transition">About Us</a>
+                    <form action="{% url 'products' %}" method="get" class="relative">
+                        <input type="text" name="q" placeholder="Search for handmade,organic..." class="w-64 px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </form>
                 </nav>
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="{% url 'logout' %}" class="text-gray-600 hover:text-primary transition" aria-label="Logout"><svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg></a>
@@ -157,7 +170,7 @@
     <footer class="bg-gray-800 text-gray-300 mt-16">
         <div class="container mx-auto px-4 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div><h3 class="text-xl font-bold text-white mb-2">Kudumbashree Store</h3><p class="text-sm">Empowering Women Through Entrepreneurship.</p></div>
+                <div><img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-20 w-20"><h3 class="text-xl font-bold text-white mb-2">Online Kudumbashree Store</h3><p class="text-sm">Empowering Women Through Entrepreneurship.</p></div>
                 <div><h4 class="font-semibold text-white mb-3">Quick Links</h4><ul class="space-y-2 text-sm"><li><a href="{% url 'about' %}" class="hover:text-white transition">About</a></li><li><a href="#" class="hover:text-white transition">Contact</a></li><li><a href="#" class="hover:text-white transition">Privacy Policy</a></li><li><a href="#" class="hover:text-white transition">Support</a></li></ul></div>
                 <div><h4 class="font-semibold text-white mb-3">Shop</h4><ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-white transition">Food Products</a></li><li><a href="#" class="hover:text-white transition">Handicrafts</a></li><li><a href="#" class="hover:text-white transition">Garments</a></li><li><a href="#" class="hover:text-white transition">Organic Produce</a></li></ul></div>
                 <div><h4 class="font-semibold text-white mb-3">Subscribe</h4><p class="text-sm mb-3">Get updates on new products and special offers.</p><form class="flex"><input type="email" placeholder="Your email" class="w-full px-3 py-2 text-sm text-gray-800 rounded-l-md focus:outline-none"><button type="submit" class="bg-primary text-white px-4 rounded-r-md hover:bg-primary-dark transition">Go</button></form></div>

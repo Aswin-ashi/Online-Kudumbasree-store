@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#6a1b9a">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
     <title>Seller Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,7 +48,12 @@
         <header class="bg-white shadow-md sticky top-0 z-20">
             <div class="container mx-auto px-4">
                 <div class="flex justify-between items-center py-4">
-                    <h1 class="text-2xl font-bold main-color">Seller Dashboard</h1>
+                    <h1 class="text-2xl font-bold main-color">
+                        <a href="{% url 'seller_dashboard' %}" class="flex items-center space-x-2 text-2xl font-bold text-primary">
+                <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12">
+                <span>Seller Dashboard</span>
+                </a>
+                    </h1>
                     <nav class="hidden md:flex items-center space-x-6">
                         <a href="#view-products" class="nav-link active" data-target="view-products">View Products</a>
                         <a href="#add-product" class="nav-link" data-target="add-product">Add Product</a>
