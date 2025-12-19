@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#6a1b9a">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
+    <title>Seller Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .main-color { color: #87267e; }
+        .bg-main { background-color: #87267e; }
+        .border-main { border-color: #87267e; }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #87267e;
+            border-bottom-color: #87267e;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #87267e;
+            box-shadow: 0 0 0 3px rgba(135, 38, 126, 0.3);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Styles for the modal backdrop */
+        .modal-backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex flex-col min-h-screen">
+        <header class="bg-white shadow-md sticky top-0 z-20">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center py-4">
+                    <h1 class="text-2xl font-bold main-color">
+                        <a href="{% url 'seller_dashboard' %}" class="flex items-center space-x-2 text-2xl font-bold text-primary">
+                <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12">
+                <span>Seller Dashboard</span>
+                </a>
+                    </h1>
+                    <nav class="hidden md:flex items-center space-x-6">
+                        <a href="#view-products" class="nav-link active" data-target="view-products">View Products</a>
+                        <a href="#add-product" class="nav-link" data-target="add-product">Add Product</a>
+                        <a href="#view-orders" class="nav-link" data-target="view-orders">Orders</a>
+                        <a href="#inbox" class="nav-link" data-target="inbox">Inbox</a>
+                        <a href="{% url 'logout' %}" class="bg-main text-white px-4 py-2 rounded-md hover:opacity-90 transition duration-300">Logout</a>
+                    </nav>
+                    <button id="mobile-menu-button" class="md:hidden text-2xl main-color">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+                <a href="#view-products" class="block py-2 px-4 text-sm nav-link active" data-target="view-products">View Products</a>
+                <a href="#add-product" class="block py-2 px-4 text-sm nav-link" data-target="add-product">Add Product</a>
+                <a href="#view-orders" class="block py-2 px-4 text-sm nav-link" data-target="view-orders">Orders</a>
+                <a href="#inbox" class="block py-2 px-4 text-sm nav-link" data-target="inbox">Inbox</a>
+                <a href="{% url 'logout' %}" class="block py-2 px-4 text-sm bg-main text-white m-2 rounded-md text-center">Logout</a>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto p-4 md:p-6">
+            
+            <section id="view-products" class="dashboard-section">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Products</h2>
+                <div class="bg-white p-4 rounded-lg shadow-md overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-4">Image</th>
+                                <th class="p-4">Product Name</th>
+                                <th class="p-4 hidden sm:table-cell">Category</th>
+                                <th class="p-4 hidden md:table-cell">Stock</th>
+                                <th class="p-4">Price</th>
+                                <th class="p-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr class="border-b">
+                                <td class="p-4"><img src="{{ product.photo.url }}" alt="{{ product.product_name }}" class="w-16 h-16 object-cover rounded-md"></td>
+                                <td class="p-4 font-medium text-gray-700">{{ product.product_name }}</td>
+                                <td class="p-4 hidden sm:table-cell">{{ product.category }}</td>
+                                <td class="p-4 hidden md:table-cell">{{ product.stock }}</td>
+                                <td class="p-4">₹{{ product.price }}</td>
+                                <td class="p-4 space-x-2">
+                                    <button class="update-btn bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
+                                            data-id="{{ product.id }}"
+                                            data-name="{{ product.product_name }}"
+                                            data-price="{{ product.price }}"
+                                            data-stock="{{ product.stock }}"
+                                            data-description="{{ product.description }}"
+                                            data-category="{{ product.category }}"
+                                            data-action="{% url 'update_product' product.id %}">
+                                        Update
+                                    </button>
+                                    <a href="{% url 'delete_product' product.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center p-8 text-gray-500">You haven't added any products yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="add-product" class="dashboard-section hidden">
+                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Add a New Product</h2>
+                 <div class="bg-white p-6 rounded-lg shadow-md">
+                     <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                         <div>
+                            <label for="product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                            <input type="text" name="product_name" id="product_name" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                         </div>
+                         <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                            <input type="text" name="category" id="category" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required placeholder="e.g., Spices, Crafts, Snacks">
+                         </div>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                             <div>
+                                <label for="price" class="block text-sm font-medium text-gray-700">Price (₹)</label>
+                                <input type="number" name="price" id="price" step="0.01" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                             </div>
+                             <div>
+                                <label for="stock" class="block text-sm font-medium text-gray-700">Stock Quantity</label>
+                                <input type="number" name="stock" id="stock" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                             </div>
+                         </div>
+                         <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea name="description" id="description" rows="4" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></textarea>
+                         </div>
+                         <div>
+                            <label for="photo" class="block text-sm font-medium text-gray-700">Product Image</label>
+                            <input type="file" name="photo" id="photo" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" required>
+                         </div>
+                         <div class="text-right">
+                            <button type="submit" class="bg-main text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition duration-300">Add Product</button>
+                         </div>
+                     </form>
+                 </div>
+            </section>
+
+            <section id="view-orders" class="dashboard-section hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Customer Orders</h2>
+                <div class="bg-white p-4 rounded-lg shadow-md overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-4">Order ID</th>
+                                <th class="p-4">Customer</th>
+                                <th class="p-4 hidden sm:table-cell">Date</th>
+                                <th class="p-4">Total</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr class="border-b">
+                                <td class="p-4 font-medium text-gray-700">#{{ order.id }}</td>
+                                <td class="p-4">{{ order.customer.name }}</td>
+                                <td class="p-4 hidden sm:table-cell">{{ order.created_at|date:"M d, Y" }}</td>
+                                <td class="p-4">₹{{ order.total_price }}</td>
+                                <td class="p-4">
+                                    {% if order.status == 'Confirmed' %}
+                                        <span class="text-green-600 font-semibold">{{ order.status }}</span>
+                                    {% elif order.status == 'Cancelled' %}
+                                        <span class="text-red-600 font-semibold">{{ order.status }}</span>
+                                    {% else %}
+                                        <span class="text-yellow-600 font-semibold">{{ order.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="p-4 space-x-2">
+                                    {% if order.status == 'Pending' %}
+                                    <a href="{% url 'confirm_order' order.id %}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm">Confirm</a>
+                                    <a href="{% url 'delete_order' order.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">Cancel</a>
+                                    {% else %}
+                                    <span class="text-gray-400 text-sm">No actions</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center p-8 text-gray-500">You have no orders yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <section id="inbox" class="dashboard-section hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Inbox / Feedback</h2>
+                <div class="space-y-4">
+                    {% for feedback in feedbacks %}
+                    <div class="bg-white p-4 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="font-semibold text-gray-800">{{ feedback.customer.name }}</p>
+                            <p class="text-xs text-gray-400">{{ feedback.created_at|date:"F d, Y" }}</p>
+                        </div>
+                        <p class="text-gray-600">{{ feedback.feedback_text }}</p>
+                        <div class="text-right mt-2">
+                            <a href="{% url 'delete_feedback' feedback.id %}" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="bg-white p-8 rounded-lg shadow-md text-center text-gray-500">
+                        Your inbox is empty.
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="update-modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-30 p-4 opacity-0">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Update Product</h3>
+                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            </div>
+            <form id="update-form" method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label for="update_product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input type="text" name="product_name" id="update_product_name" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label for="update_category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <input type="text" name="category" id="update_category" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="update_price" class="block text-sm font-medium text-gray-700">Price (₹)</label>
+                        <input type="number" name="price"  min="0" id="update_price" step="0.01" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                    </div>
+                    <div>
+                        <label for="update_stock" class="block text-sm font-medium text-gray-700">Stock Quantity</label>
+                        <input type="number" name="stock"  min="0" id="update_stock" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="update_description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" id="update_description" rows="3" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Product Image</label>
+                    <p class="text-xs text-gray-500 mb-2">Upload a new image to replace the current one.</p>
+                    <input type="file" name="photo" id="update_photo" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+                </div>
+                <div class="text-right pt-4">
+                    <button type="button" id="cancel-update-btn" class="bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 transition duration-300 mr-2">Cancel</button>
+                    <button type="submit" class="bg-main text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition duration-300">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navigation logic
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.dashboard-section');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    section.classList.toggle('hidden', section.id !== targetId);
+                });
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.target === targetId);
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.dataset.target;
+                    showSection(targetId);
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Modal logic
+            const updateModal = document.getElementById('update-modal');
+            const updateModalPanel = updateModal.querySelector('div');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const cancelUpdateBtn = document.getElementById('cancel-update-btn');
+            const updateForm = document.getElementById('update-form');
+            const updateButtons = document.querySelectorAll('.update-btn');
+
+            function openModal() {
+                updateModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                // Trigger transition
+                setTimeout(() => {
+                    updateModal.classList.remove('opacity-0');
+                    updateModalPanel.classList.remove('scale-95', 'opacity-0');
+                }, 10);
+            }
+
+            function closeModal() {
+                updateModalPanel.classList.add('scale-95', 'opacity-0');
+                 setTimeout(() => {
+                    updateModal.classList.add('opacity-0');
+                    document.body.style.overflow = '';
+                    setTimeout(() => updateModal.classList.add('hidden'), 300);
+                }, 150);
+            }
+
+            updateButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const dataset = this.dataset;
+                    
+                    // Set form action
+                    updateForm.action = dataset.action;
+                    
+                    // Populate form fields
+                    document.getElementById('update_product_name').value = dataset.name;
+                    document.getElementById('update_price').value = parseFloat(dataset.price.replace('₹','')).toFixed(2);
+                    document.getElementById('update_stock').value = dataset.stock;
+                    document.getElementById('update_description').value = dataset.description;
+                    document.getElementById('update_category').value = dataset.category; // Populate category
+                    
+                    openModal();
+                });
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelUpdateBtn.addEventListener('click', closeModal);
+            updateModal.addEventListener('click', function(e) {
+                if (e.target === updateModal) {
+                    closeModal();
+                }
+            });
+        });
+
+        
+
+        //page reload storage
+
+           document.addEventListener('DOMContentLoaded', function () {
+    // Smooth fade-in + slide effect
+       document.body.style.opacity = 0;
+       document.body.style.transform = "translateY(2px)";
+       document.body.style.transition = "opacity 2s ease, transform 2s ease";
+       setTimeout(() => { 
+       document.body.style.opacity = 1; 
+       document.body.style.transform = "translateY(0)";
+       }, 100);
+
+
+    // Navigation logic
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.dashboard-section');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // Function to show a section with smooth transition
+    function showSection(targetId) {
+        sections.forEach(section => {
+            if (section.id === targetId) {
+                section.classList.remove('hidden');
+                section.style.opacity = 0;
+                section.style.transition = "opacity 0.5s ease";
+                setTimeout(() => section.style.opacity = 1, 20);
+            } else {
+                section.style.opacity = 0;
+                setTimeout(() => section.classList.add('hidden'), 300);
+            }
+        });
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.target === targetId);
+        });
+        localStorage.setItem('activeSection', targetId);
+    }
+
+    // Restore saved section
+    const savedSection = localStorage.getItem('activeSection') || 'view-products';
+    showSection(savedSection);
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            showSection(this.dataset.target);
+            if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
+        });
+    });
+
+    mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+    // Modal logic
+    const updateModal = document.getElementById('update-modal');
+    const updateModalPanel = updateModal.querySelector('div');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const cancelUpdateBtn = document.getElementById('cancel-update-btn');
+    const updateForm = document.getElementById('update-form');
+    const updateButtons = document.querySelectorAll('.update-btn');
+
+    function openModal() {
+        updateModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            updateModal.classList.remove('opacity-0');
+            updateModalPanel.classList.remove('scale-95', 'opacity-0');
+        }, 10);
+    }
+
+    function closeModal() {
+        updateModalPanel.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            updateModal.classList.add('opacity-0');
+            document.body.style.overflow = '';
+            setTimeout(() => updateModal.classList.add('hidden'), 300);
+        }, 150);
+    }
+
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const dataset = this.dataset;
+            updateForm.action = dataset.action;
+            document.getElementById('update_product_name').value = dataset.name;
+            document.getElementById('update_price').value = parseFloat(dataset.price.replace('₹','')).toFixed(2);
+            document.getElementById('update_stock').value = dataset.stock;
+            document.getElementById('update_description').value = dataset.description;
+            document.getElementById('update_category').value = dataset.category;
+            openModal();
+        });
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelUpdateBtn.addEventListener('click', closeModal);
+    updateModal.addEventListener('click', e => { if (e.target === updateModal) closeModal(); });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#6a1b9a">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
+    <title>Kudumbasree - Login & Registration</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the page */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Transition styles for the main slider (Login <-> Register) */
+        #main-slider {
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        /* Transition styles for the inner slider (Customer <-> Seller) */
+        #registration-slider {
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        /* Custom focus ring color to match the theme */
+        .form-input:focus {
+            outline: none;
+            border-color: #87267e; /* theme purple */
+            box-shadow: 0 0 0 3px rgba(135, 38, 126, 0.3);
+        }
+
+        /* Style for the alert messages */
+        .auto-dismiss-alert {
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-white antialiased">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <!-- Main Card Container -->
+        <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+            <div class="absolute top-0 left-0 w-full h-2 bg-[#87267e]"></div>
+            
+            <!-- Django Messages Framework -->
+            {% if messages %}
+                <div class="p-4">
+                    {% for message in messages %}
+                        <div class="auto-dismiss-alert p-3 rounded-lg text-center text-sm font-medium
+                            {% if message.tags == 'success' %} bg-green-100 text-green-800 {% endif %}
+                            {% if message.tags == 'error' %} bg-red-100 text-red-800 {% endif %}
+                            {% if message.tags == 'info' %} bg-blue-100 text-blue-800 {% endif %}"
+                            role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- This div will slide between Login and Registration -->
+            <div id="main-slider" class="flex w-[200%]">
+                <!-- Login Form Section -->
+                <div class="w-1/2 p-6 md:p-8">
+                    <img src="{% static 'img/logo-kudumbashree.png' %}"  alt="Logo" class="h-14 w-14 object-contain mx-auto">
+
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-bold text-[#87267e]">Welcome Back!</h2>
+                        <p class="text-gray-500 mt-2">Please sign in to continue.</p>
+                    </div>
+                    
+                    <form action="{% url 'login' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="space-y-4">
+                            <div>
+                                <label for="login-username" class="text-sm font-medium text-gray-600">Username</label>
+                                <input type="text" id="login-username" name="username" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:border-[#87267e] transition duration-200" placeholder="username" required>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-baseline">
+                                    <label for="login-password" class="text-sm font-medium text-gray-600">Password</label>
+                                    <a href="#" class="text-sm text-[#87267e] hover:underline">Forgot?</a>
+                                </div>
+                                <input type="password" id="login-password" name="password" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:border-[#87267e] transition duration-200" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <button type="submit" class="w-full bg-[#87267e] text-white font-semibold py-3 px-4 rounded-lg hover:bg-[#6c1e65] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#87267e] transition duration-300 transform hover:scale-105">
+                                Sign In
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            Don't have an account? 
+                            <button id="show-register-btn" class="font-semibold text-[#87267e] hover:underline">Register Now</button>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Registration Forms Section -->
+                <div class="w-1/2 p-6 md:p-8">
+                    <div class="text-center mb-4">
+                        <h2 class="text-3xl font-bold text-[#87267e]">Create Account</h2>
+                        <p class="text-gray-500 mt-2">Join our community today!</p>
+                    </div>
+
+                    <!-- Inner container for Customer/Seller slider -->
+                    <div class="relative w-full overflow-hidden">
+                        <div id="registration-slider" class="flex w-[200%]">
+                            <!-- Customer Registration Form -->
+                            <div class="w-1/2 px-2">
+                                <h3 class="font-bold text-xl text-center mb-4 text-[#87267e]">Customer Registration</h3>
+                                <form action="{% url 'register_customer' %}" method="POST" enctype="multipart/form-data" class="space-y-2">
+                                    {% csrf_token %}
+                                    <input name="name" type="text" placeholder="Full Name" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <input name="username" type="text" placeholder="Username" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <input name="email" type="email" placeholder="Email Address" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <input name="password" type="password" placeholder="Password" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <textarea name="address" placeholder="Address" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" rows="2" required></textarea>
+                                    <div class="flex space-x-2">
+                                        <input name="phone" type="tel" placeholder="Phone" pattern="[0-9]{10}" maxlength="10" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                        <input name="age" type="number" min="0" placeholder="Age" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    </div>
+                                    <div>
+                                        <label for="customer-photo" class="text-sm font-medium text-gray-600">Profile Photo</label>
+                                        <input name="photo" id="customer-photo" type="file" class="form-input block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#87267e] file:text-white hover:file:bg-[#6c1e65]" required>
+                                    </div>
+                                    <button type="submit" class="w-full bg-[#87267e] text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-[#6c1e65] transition duration-300 transform hover:scale-105 !mt-4">
+                                        Register as Customer
+                                    </button>
+                                    <p class="text-xs text-center text-gray-500 pt-2">Are you a seller? <button type="button" id="show-seller-reg-btn" class="font-semibold text-[#87267e] hover:underline">Click here</button></p>
+                                </form>
+                            </div>
+
+                            <!-- Seller Registration Form -->
+                            <div class="w-1/2 px-2">
+                                <h3 class="font-bold text-xl text-center mb-4 text-[#87267e]">Seller Registration</h3>
+                                <form action="{% url 'register_seller' %}" method="POST" enctype="multipart/form-data" class="space-y-2">
+                                     {% csrf_token %}
+                                     <input name="name" type="text" placeholder="Full Name" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <input name="username" type="text" placeholder="Username" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <input name="email" type="email" placeholder="Email Address" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <input name="password" type="password" placeholder="Password" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <textarea name="address" placeholder="Address" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" rows="2" required></textarea>
+                                    <input name="phone" type="tel" placeholder="Phone" pattern="[0-9]{10}" maxlength="10" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" required>
+                                    <textarea name="kudumbasree_details" placeholder="Kudumbasree Details" class="form-input block w-full px-4 py-2 text-sm bg-gray-50 border border-gray-300 rounded-lg" rows="2" required></textarea>
+                                    <div>
+                                        <label for="seller-passbook" class="text-sm font-medium text-gray-600">Passbook Photo</label>
+                                        <input name="passbook" id="seller-passbook" type="file" class="form-input block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#87267e] file:text-white hover:file:bg-[#6c1e65]" required>
+                                    </div>
+                                    <button type="submit" class="w-full bg-[#87267e] text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-[#6c1e65] transition duration-300 transform hover:scale-105 !mt-4">
+                                        Register as Seller
+                                    </button>
+                                    <p class="text-xs text-center text-gray-500 pt-2">Not a seller? <button type="button" id="show-customer-reg-btn" class="font-semibold text-[#87267e] hover:underline">Click here</button></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <button id="show-login-btn" class="font-semibold text-[#87267e] hover:underline">Sign In</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SLIDER LOGIC ---
+        const mainSlider = document.getElementById('main-slider');
+        const showRegisterBtn = document.getElementById('show-register-btn');
+        const showLoginBtn = document.getElementById('show-login-btn');
+        const registrationSlider = document.getElementById('registration-slider');
+        const showSellerRegBtn = document.getElementById('show-seller-reg-btn');
+        const showCustomerRegBtn = document.getElementById('show-customer-reg-btn');
+        
+        showRegisterBtn.addEventListener('click', () => { mainSlider.style.transform = 'translateX(-50%)'; });
+        showLoginBtn.addEventListener('click', () => { mainSlider.style.transform = 'translateX(0%)'; });
+        showSellerRegBtn.addEventListener('click', () => { registrationSlider.style.transform = 'translateX(-50%)'; });
+        showCustomerRegBtn.addEventListener('click', () => { registrationSlider.style.transform = 'translateX(0%)'; });
+
+        // --- MESSAGE TIMER LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const alerts = document.querySelectorAll('.auto-dismiss-alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 500);
+                }, 2000);
+            });
+        });
+    </script>
+
+</body>
+</html>
+
