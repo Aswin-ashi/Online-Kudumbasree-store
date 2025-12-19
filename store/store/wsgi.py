@@ -19,7 +19,7 @@ import os
 import sys
 
 # Add your project directory to the sys.path
-path = '/home/aswinashi/Online-Kudumbasree-store'
+path = '/home/aswinashi/Online-Kudumbasree-store/store'
 if path not in sys.path:
     sys.path.append(path)
 
