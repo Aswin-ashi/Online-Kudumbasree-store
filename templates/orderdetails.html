@@ -4,19 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="msapplication-TileColor" content="#87267e">
     <meta name="theme-color" content="#87267e">
     <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
-    <title>Your Shopping Bag - Kudumbashree Online Store</title>
+    <title>Order #{{ order.id }} Details - Kudumbashree Online Store</title>
     <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #87267e;
-            --primary-hover: #6c1e65;
-        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -25,15 +20,6 @@
         }
         h1, h2, h3, h4, .font-heading {
             font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .fade-in-section.is-visible {
-            opacity: 1;
-            transform: translateY(0);
         }
     </style>
 </head>
@@ -82,12 +68,12 @@
 
                 <!-- Action Icons -->
                 <div class="hidden md:flex items-center space-x-3">
-                    <a href="{% url 'my_orders' %}" class="p-2.5 text-slate-600 hover:text-[#87267e] hover:bg-[#87267e]/10 rounded-2xl transition-all flex items-center gap-1.5" title="My Orders">
+                    <a href="{% url 'my_orders' %}" class="p-2.5 text-[#87267e] bg-[#87267e]/10 rounded-2xl transition-all flex items-center gap-1.5" title="My Orders">
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" /></svg>
-                        <span class="text-xs font-bold text-slate-700 hidden lg:inline">Orders</span>
+                        <span class="text-xs font-bold text-[#87267e] hidden lg:inline">Orders</span>
                     </a>
 
-                    <a href="{% url 'cart' %}" class="relative p-2.5 text-[#87267e] bg-[#87267e]/10 rounded-2xl transition-all" aria-label="Cart">
+                    <a href="{% url 'cart' %}" class="relative p-2.5 text-slate-600 hover:text-[#87267e] hover:bg-[#87267e]/10 rounded-2xl transition-all" aria-label="Cart">
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                         <span class="cart-count absolute top-1 right-1 bg-[#87267e] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ cart_item_count|default:0 }}</span>
                     </a>
@@ -177,186 +163,129 @@
     </div>
     {% endif %}
 
-    <main class="container mx-auto px-4 lg:px-8 py-10 relative z-10 flex-grow">
-        <!-- 3-Step Progress Indicator -->
-        <div class="max-w-3xl mx-auto mb-10">
-            <div class="flex items-center justify-between relative">
-                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 z-0"></div>
-                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1/3 h-1 bg-[#87267e] z-0"></div>
-
-                <div class="relative z-10 flex flex-col items-center">
-                    <div class="w-10 h-10 rounded-full bg-[#87267e] text-white flex items-center justify-center font-bold text-sm shadow-md ring-4 ring-purple-100">1</div>
-                    <span class="text-xs font-bold text-[#87267e] mt-2 font-heading">Shopping Bag</span>
-                </div>
-                <div class="relative z-10 flex flex-col items-center">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm">2</div>
-                    <span class="text-xs font-semibold text-slate-400 mt-2 font-heading">Shipping Address</span>
-                </div>
-                <div class="relative z-10 flex flex-col items-center">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm">3</div>
-                    <span class="text-xs font-semibold text-slate-400 mt-2 font-heading">Payment & Place Order</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page Header Banner -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between bg-white rounded-3xl p-6 md:p-8 border border-slate-200/80 shadow-sm mb-10">
-            <div>
-                <span class="text-xs font-bold text-[#87267e] uppercase tracking-wider bg-purple-50 px-3 py-1 rounded-full border border-purple-100 mb-2 inline-block">Direct Micro-Enterprise Order</span>
-                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight font-heading">Your Shopping Bag</h1>
-                <p class="text-slate-500 mt-1 text-sm font-medium">Review your items before proceeding to instant shipping details.</p>
-            </div>
-            <a href="{% url 'products' %}" class="mt-4 md:mt-0 inline-flex items-center gap-2 text-sm font-bold text-[#87267e] hover:text-[#6c1e65] transition">
-                ← Continue Shopping
+    <main class="container mx-auto px-4 lg:px-8 py-10 relative z-10 flex-grow max-w-5xl">
+        <!-- Back Navigation & Top Bar -->
+        <div class="flex items-center justify-between mb-6">
+            <a href="{% url 'my_orders' %}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-[#87267e] bg-white border border-slate-200 px-4 py-2.5 rounded-xl shadow-sm transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <span>Back to My Orders</span>
             </a>
+            <span class="text-xs font-bold text-slate-400">Order ID: #{{ order.id }}</span>
         </div>
 
-        <!-- Cart Content Grid -->
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Cart Items List -->
-            <div class="w-full lg:w-2/3">
+        <!-- Tracking Visual Card -->
+        <div class="bg-white border border-slate-200/80 rounded-3xl shadow-sm p-6 md:p-8 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-100 mb-8 gap-4">
+                <div>
+                    <h1 class="text-2xl font-extrabold text-slate-900 font-heading">Shipment Status</h1>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Placed on {{ order.created_at|date:"F d, Y" }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Status:</span>
+                    <span class="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 font-heading">
+                        {{ order.status|default:"Confirmed" }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Shipment Tracking Progress Bar -->
+            <div class="grid grid-cols-4 gap-2 relative">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-sm mb-2">✓</div>
+                    <span class="text-[11px] font-bold text-slate-800 font-heading">Order Placed</span>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-sm mb-2">✓</div>
+                    <span class="text-[11px] font-bold text-slate-800 font-heading">Processing</span>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 rounded-full bg-[#87267e] text-white flex items-center justify-center font-bold text-xs shadow-sm ring-4 ring-purple-100 mb-2">3</div>
+                    <span class="text-[11px] font-extrabold text-[#87267e] font-heading">Out for Delivery</span>
+                </div>
+                <div class="flex flex-col items-center text-center opacity-40">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-xs mb-2">4</div>
+                    <span class="text-[11px] font-medium text-slate-500 font-heading">Delivered</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Items Purchased & Seller Review Form -->
+            <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white border border-slate-200/80 rounded-3xl shadow-sm p-6 md:p-8">
-                    <div id="cart-items-container" class="divide-y divide-slate-100">
-                        {% for item in cart_items %}
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4 cart-item group">
-                            <div class="flex items-center space-x-4">
-                                <img src="{{ item.product.photo_url }}" alt="{{ item.product.product_name }}" class="w-24 h-24 object-cover rounded-2xl border border-slate-100 group-hover:scale-105 transition-transform">
-                                <div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">100% Kudumbashree</span>
-                                    <h3 class="font-extrabold text-slate-900 text-base md:text-lg group-hover:text-[#87267e] transition-colors mt-1 font-heading">{{ item.product.product_name }}</h3>
-                                    <p class="text-xs text-slate-400 mt-0.5 font-medium line-clamp-1 max-w-xs">{{ item.product.description }}</p>
-                                    <p class="text-[#87267e] font-extrabold text-lg mt-2 font-heading">₹{{ item.product.price }} <span class="text-xs font-normal text-slate-400">per unit</span></p>
+                    <h2 class="text-lg font-extrabold text-slate-900 font-heading mb-6 pb-3 border-b border-slate-100">Ordered Items</h2>
+                    
+                    <div class="space-y-6">
+                        {% for item in order.items.all %}
+                        <div class="bg-slate-50/70 border border-slate-200/60 rounded-2xl p-4 md:p-5">
+                            <div class="flex items-center gap-4">
+                                <img src="{{ item.product.photo_url }}" alt="{{ item.product.product_name }}" class="w-16 h-16 object-cover rounded-xl border border-slate-200 bg-white">
+                                <div class="flex-grow">
+                                    <h3 class="font-extrabold text-slate-900 text-sm font-heading">{{ item.product.product_name }}</h3>
+                                    <p class="text-xs text-slate-500 font-medium">Quantity: <span class="font-bold text-slate-700">{{ item.quantity }}</span></p>
+                                    <p class="text-sm font-extrabold text-[#87267e] font-heading mt-1">₹{{ item.price }}</p>
                                 </div>
                             </div>
-                            
-                            <div class="flex items-center justify-between sm:justify-end space-x-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                                <!-- Quantity Controls -->
-                                <div class="flex items-center bg-slate-100 rounded-2xl p-1 border border-slate-200/60">
-                                    <a href="{% url 'update_cart' item.id 'decrease' %}" class="w-8 h-8 flex items-center justify-center text-slate-700 bg-white rounded-xl shadow-sm hover:text-[#87267e] hover:bg-purple-50 transition font-bold text-base">-</a>
-                                    <span class="w-10 text-center font-extrabold text-slate-800 text-sm">{{ item.quantity }}</span>
-                                    <a href="{% url 'update_cart' item.id 'increase' %}" class="w-8 h-8 flex items-center justify-center text-slate-700 bg-white rounded-xl shadow-sm hover:text-[#87267e] hover:bg-purple-50 transition font-bold text-base">+</a>
-                                </div>
 
-                                <!-- Item Total Subtotal -->
-                                <div class="text-right">
-                                    <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider block sm:hidden">Item Total</span>
-                                    <p class="font-extrabold text-lg text-slate-900 font-heading">₹{{ item.total_price }}</p>
+                            <!-- Seller Review & Rating Input Box -->
+                            <form method="POST" action="{% url 'add_feedback' order.id item.product.id %}" class="mt-4 pt-3 border-t border-slate-200/60">
+                                {% csrf_token %}
+                                <label for="feedback_{{ item.id }}" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">Rate Product & Review Seller ({{ item.product.seller.name }})</label>
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <select name="rating" class="px-3 py-2 bg-amber-50 border border-amber-200 text-amber-800 font-extrabold rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                        <option value="5">★★★★★ (5 Stars)</option>
+                                        <option value="4">★★★★☆ (4 Stars)</option>
+                                        <option value="3">★★★☆☆ (3 Stars)</option>
+                                        <option value="2">★★☆☆☆ (2 Stars)</option>
+                                        <option value="1">★☆☆☆☆ (1 Star)</option>
+                                    </select>
+                                    <input type="text" id="feedback_{{ item.id }}" name="feedback_text" placeholder="Optional review details (quality, delivery...)" class="flex-grow px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#87267e]/30 focus:border-[#87267e]">
+                                    <button type="submit" class="bg-[#87267e] text-white font-extrabold text-xs px-4 py-2 rounded-xl hover:bg-[#6c1e65] transition shadow-sm font-heading shrink-0">
+                                        Submit Rating
+                                    </button>
                                 </div>
-
-                                <!-- Remove Button -->
-                                <a href="{% url 'remove_from_cart' item.id %}" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-xl transition" title="Remove item">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                </a>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div class="text-center py-16 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
-                            <div class="w-16 h-16 bg-purple-50 text-[#87267e] rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                            </div>
-                            <h3 class="text-xl font-extrabold text-slate-800 font-heading">Your shopping bag is empty</h3>
-                            <p class="mt-1 text-slate-500 font-medium text-sm">Discover authentic handcrafted products and local spices.</p>
-                            <a href="{% url 'products' %}" class="mt-6 inline-block bg-[#87267e] text-white font-extrabold py-3.5 px-8 rounded-2xl hover:bg-[#6c1e65] shadow-md hover:shadow-lg transition">
-                                Start Shopping
-                            </a>
+                            </form>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
+            </div>
 
-                <!-- Trust Guarantees Bar -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3">
-                        <span class="text-2xl">🌱</span>
-                        <div>
-                            <h4 class="text-xs font-extrabold text-slate-800 font-heading">Direct Micro-Enterprise</h4>
-                            <p class="text-[11px] text-slate-400 font-medium">100% direct artisan revenue</p>
+            <!-- Delivery Address & Payment Summary Sidebar -->
+            <div class="space-y-6">
+                <!-- Delivery Info Card -->
+                <div class="bg-white border border-slate-200/80 rounded-3xl shadow-sm p-6">
+                    <h2 class="text-base font-extrabold text-slate-900 font-heading mb-4 pb-2 border-b border-slate-100">Delivery Recipient</h2>
+                    <div class="space-y-2 text-xs font-medium text-slate-600">
+                        <p class="font-extrabold text-slate-900 text-sm font-heading">{{ order.first_name }} {{ order.last_name }}</p>
+                        <p>{{ order.address }}</p>
+                        <p>{{ order.city }}, {{ order.state }} - {{ order.zip_code }}</p>
+                        <div class="pt-2 border-t border-slate-100 space-y-1">
+                            <p class="text-slate-500">Email: <span class="font-bold text-slate-700">{{ order.email }}</span></p>
+                            <p class="text-slate-500">Phone: <span class="font-bold text-slate-700">{{ order.phone }}</span></p>
                         </div>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3">
-                        <span class="text-2xl">⚡</span>
-                        <div>
-                            <h4 class="text-xs font-extrabold text-slate-800 font-heading">Kerala Express Delivery</h4>
-                            <p class="text-[11px] text-slate-400 font-medium">Dispatched within 24 hours</p>
+                </div>
+
+                <!-- Payment Summary Card -->
+                <div class="bg-gradient-to-br from-purple-50/50 to-white border border-purple-100 rounded-3xl shadow-sm p-6">
+                    <h2 class="text-base font-extrabold text-slate-900 font-heading mb-4 pb-2 border-b border-slate-100">Payment Breakdown</h2>
+                    <div class="space-y-3 text-xs font-medium">
+                        <div class="flex justify-between text-slate-600">
+                            <span>Subtotal</span>
+                            <span class="font-bold text-slate-900">₹{{ order.total_price }}</span>
                         </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex items-center gap-3">
-                        <span class="text-2xl">🛡️</span>
-                        <div>
-                            <h4 class="text-xs font-extrabold text-slate-800 font-heading">Quality Guarantee</h4>
-                            <p class="text-[11px] text-slate-400 font-medium">Government verified heritage</p>
+                        <div class="flex justify-between text-slate-600">
+                            <span>Shipping</span>
+                            <span class="font-bold text-emerald-600">FREE</span>
+                        </div>
+                        <div class="pt-3 border-t border-slate-200 flex justify-between items-center">
+                            <span class="font-extrabold text-slate-900 text-sm font-heading">Total Paid</span>
+                            <span class="text-2xl font-extrabold text-[#87267e] font-heading">₹{{ order.total_price }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Sticky Order Summary Card -->
-            {% if cart_items %}
-            <div class="w-full lg:w-1/3">
-                <div class="bg-white border border-slate-200/80 rounded-3xl shadow-sm p-6 md:p-8 sticky top-28">
-                    <h3 class="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-2 font-heading pb-4 border-b border-slate-100">
-                        <svg class="w-5 h-5 text-[#87267e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        Order Summary
-                    </h3>
-                    
-                    <!-- Free Shipping Dynamic Progress Bar -->
-                    {% if is_free_delivery %}
-                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3.5 rounded-2xl mb-6 flex items-center justify-between shadow-sm font-medium text-xs">
-                        <span class="flex items-center gap-1.5">🎉 <strong>Unlocked FREE Express Shipping!</strong></span>
-                        <span class="bg-emerald-600 text-white font-extrabold px-2.5 py-0.5 rounded-full text-[10px] uppercase">FREE</span>
-                    </div>
-                    {% else %}
-                    <div class="bg-amber-50 border border-amber-200 text-amber-900 p-3.5 rounded-2xl mb-6 shadow-sm text-xs font-medium">
-                        <div class="flex items-center justify-between mb-2">
-                            <span>🚀 Add <strong>₹{{ amount_needed_for_free_delivery }}</strong> more for <strong>FREE Express Delivery</strong></span>
-                        </div>
-                        <div class="w-full bg-amber-200 h-2 rounded-full overflow-hidden">
-                            <div class="bg-[#87267e] h-full rounded-full transition-all duration-500" style="width: {% widthratio subtotal 500 100 %}%;"></div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <div class="space-y-4 mb-6 text-sm">
-                        <div class="flex justify-between text-slate-600 font-semibold">
-                            <span>Subtotal ({{ cart_items|length }} items)</span>
-                            <span id="subtotal" class="font-extrabold text-slate-900 font-heading">₹{{ subtotal }}</span>
-                        </div>
-                        <div class="flex justify-between text-slate-600 font-semibold items-center">
-                            <span>Express Delivery Fee</span>
-                            <span id="shipping">
-                                {% if is_free_delivery %}
-                                    <span class="font-extrabold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full text-xs">FREE</span>
-                                {% else %}
-                                    <span class="font-extrabold text-slate-800">₹{{ shipping }}</span>
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div class="flex justify-between text-slate-600 font-semibold">
-                            <span>Government Taxes & Fees</span>
-                            <span class="font-bold text-slate-400 text-xs">Included</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 border-t border-slate-100 mb-8">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Grand Total</span>
-                                <span class="text-3xl font-extrabold text-[#87267e] tracking-tight font-heading">₹{{ total }}</span>
-                            </div>
-                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md">COD Eligible</span>
-                        </div>
-                    </div>
-
-                    <a href="{% url 'checkout' %}" class="block text-center w-full bg-[#87267e] text-white font-extrabold py-4 px-6 rounded-2xl hover:bg-[#6c1e65] hover:shadow-xl hover:shadow-[#87267e]/30 transition-all duration-300 transform hover:-translate-y-0.5">
-                        Proceed to Checkout →
-                    </a>
-
-                    <div class="mt-4 text-center">
-                        <span class="text-xs text-slate-400 font-medium">🔒 Encrypted 256-Bit Checkout</span>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
         </div>
     </main>
 
@@ -423,18 +352,9 @@
             </div>
         </div>
     </footer>
-    
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
 
-        // Profile Dropdown & Modal Logic
+    <script>
+        // Profile Dropdown & Modal Toggle
         const profileBtn = document.getElementById('profile-btn');
         const profileDropdown = document.getElementById('profile-dropdown');
         const editProfileBtn = document.getElementById('edit-profile-btn');
@@ -447,6 +367,7 @@
                 e.stopPropagation();
                 profileDropdown.classList.toggle('hidden');
             });
+
             window.addEventListener('click', (e) => {
                 if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
                     profileDropdown.classList.add('hidden');
@@ -472,20 +393,6 @@
                 editProfileModal.classList.add('hidden');
             });
         }
-
-        // Scroll animation observer
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.fade-in-section').forEach(section => {
-            observer.observe(section);
-        });
-        
     </script>
 </body>
 </html>

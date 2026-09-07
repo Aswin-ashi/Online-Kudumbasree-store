@@ -1,466 +1,912 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
     {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="msapplication-TileColor" content="#6a1b9a">
+    <meta name="msapplication-TileColor" content="#87267e">
     <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
-    <title>Seller Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Kudumbashree Seller Dashboard</title>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
+        :root {
+            --jde-navy: #0f172a;
+            --jde-header: #1e293b;
+            --jde-blue: #0284c7;
+            --jde-purple: #87267e;
+            --jde-[#87267e]-dark: #6c1e65;
+            --jde-border: #e2e8f0;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            min-height: 100vh;
         }
-        .main-color { color: #87267e; }
-        .bg-main { background-color: #87267e; }
-        .border-main { border-color: #87267e; }
-        .nav-link {
-            transition: all 0.3s ease;
-            border-bottom: 2px solid transparent;
+
+        h1, h2, h3, h4, .font-heading, .jde-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .nav-link.active, .nav-link:hover {
+
+        /* JDE Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #87267e;
+        }
+
+        /* JDE Enterprise Card & Data Grid Styling */
+        .jde-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #cbd5e1;
+            border-top: 3px solid #87267e;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 12px;
+        }
+
+        .jde-grid-header {
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 2px solid #cbd5e1;
+            color: #334155;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.725rem;
+        }
+
+        .jde-nav-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .jde-nav-item:hover, .jde-nav-item.active {
+            background-color: #f1f5f9;
+            border-left-color: #87267e;
             color: #87267e;
-            border-bottom-color: #87267e;
         }
-        .form-input:focus {
-            outline: none;
-            border-color: #87267e;
-            box-shadow: 0 0 0 3px rgba(135, 38, 126, 0.3);
+
+        .jde-badge-status {
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Styles for the modal backdrop */
-        .modal-backdrop {
-            transition: opacity 0.3s ease-in-out;
+
+        .fade-in-section {
+            animation: float-up 0.4s ease-out forwards;
+        }
+
+        @keyframes float-up {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="antialiased">
 
-    <div class="flex flex-col min-h-screen">
-        <header class="bg-white shadow-md sticky top-0 z-20">
-            <div class="container mx-auto px-4">
-                <div class="flex justify-between items-center py-4">
-                    <h1 class="text-2xl font-bold main-color">
-                        <a href="{% url 'seller_dashboard' %}" class="flex items-center space-x-2 text-2xl font-bold text-primary">
-                <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12">
-                <span>Seller Dashboard</span>
+<body class="relative text-slate-800 antialiased overflow-x-hidden min-h-screen flex flex-col justify-between">
+
+    <!-- Top Announcement / JDE System Strip -->
+    <div class="bg-slate-950 text-slate-300 py-1.5 px-4 text-xs font-semibold tracking-wide flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+            <span class="bg-[#87267e] text-white font-extrabold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">Kudumbashree EnterpriseOne</span>
+            <span class="text-slate-400 hidden sm:inline">System Environment: <strong class="text-white font-mono">PROD_KUDUMBASHREE_01</strong></span>
+        </div>
+        <div class="flex items-center gap-4 text-[11px] text-slate-400">
+            <span><i class="fas fa-[#87267e] text-[#87267e] mr-1"></i> Kudumbashree Micro-Enterprise System</span>
+            <span class="hidden md:inline text-slate-500">|</span>
+            <span class="hidden md:inline font-mono">User: {{ seller.name }}</span>
+        </div>
+    </div>
+
+    <!-- JDE Main Global Header -->
+    <header class="sticky top-0 z-50 bg-white border-b border-slate-300 shadow-md">
+        <div class="px-4 lg:px-8 py-3 flex items-center justify-between">
+            <!-- JDE Branding & App Title -->
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'seller_dashboard' %}" class="flex items-center space-x-3 group">
+                    <div class="bg-white p-1.5 rounded-xl border border-slate-200 group-hover:border-[#87267e] transition-all shadow-sm">
+                        <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-9 w-9 object-contain">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight font-heading">Kudumbashree <span class="text-[#87267e]">Store</span></span>
+                            <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">Release 2026</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Seller Management Portal • {{ seller.name }}</span>
+                    </div>
                 </a>
-                    </h1>
-                    <nav class="hidden md:flex items-center space-x-6">
-                        <a href="#view-products" class="nav-link active" data-target="view-products">View Products</a>
-                        <a href="#add-product" class="nav-link" data-target="add-product">Add Product</a>
-                        <a href="#view-orders" class="nav-link" data-target="view-orders">Orders</a>
-                        <a href="#inbox" class="nav-link" data-target="inbox">Inbox</a>
-                        <a href="{% url 'logout' %}" class="bg-main text-white px-4 py-2 rounded-md hover:opacity-90 transition duration-300">Logout</a>
-                    </nav>
-                    <button id="mobile-menu-button" class="md:hidden text-2xl main-color">
-                        <i class="fas fa-bars"></i>
+            </div>
+
+            <!-- JDE Fast Path Search Bar -->
+            <div class="hidden lg:flex items-center max-w-md w-full mx-6">
+                <div class="relative w-full flex items-center bg-slate-100 border border-slate-300 rounded-lg focus-within:bg-white focus-within:border-[#87267e] transition-all">
+                    <span class="pl-3 text-xs font-mono font-bold text-slate-500 uppercase">Fast Path:</span>
+                    <input type="text" id="jde-fast-path" placeholder="Jump to form (e.g., P0101, Orders, Sales)..." class="w-full px-3 py-2 text-xs font-medium bg-transparent border-none focus:outline-none text-slate-800 placeholder-slate-400 font-mono">
+                    <button class="px-3 py-2 bg-[#87267e] hover:bg-[#6c1e65] text-white text-xs font-bold rounded-r-lg transition">
+                        <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
-            <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
-                <a href="#view-products" class="block py-2 px-4 text-sm nav-link active" data-target="view-products">View Products</a>
-                <a href="#add-product" class="block py-2 px-4 text-sm nav-link" data-target="add-product">Add Product</a>
-                <a href="#view-orders" class="block py-2 px-4 text-sm nav-link" data-target="view-orders">Orders</a>
-                <a href="#inbox" class="block py-2 px-4 text-sm nav-link" data-target="inbox">Inbox</a>
-                <a href="{% url 'logout' %}" class="block py-2 px-4 text-sm bg-main text-white m-2 rounded-md text-center">Logout</a>
+
+            <!-- User Status & Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex items-center space-x-3 border-r border-slate-200 pr-4 text-right">
+                    <div>
+                        <p class="text-xs font-extrabold text-slate-800">{{ seller.name }}</p>
+                        <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Active Unit</span>
+                    </div>
+                </div>
+                <a href="{% url 'logout' %}" class="bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 font-bold py-2 px-4 rounded-lg transition-all text-xs flex items-center gap-1.5 shadow-sm">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <main class="flex-grow container mx-auto p-4 md:p-6">
-            
+    <!-- App Container Layout (JDE Sidebar + Main Workplace) -->
+    <div class="flex-grow flex flex-col md:flex-row w-full max-w-[1700px] mx-auto px-2 md:px-6 py-6 gap-6">
+
+        <!-- JDE Enterprise Left Navigator Panel -->
+        <aside class="w-full md:w-64 shrink-0 space-y-4">
+            <div class="bg-white border border-slate-300 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-slate-900 text-white px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+                    <span class="text-xs font-extrabold uppercase tracking-wider font-heading flex items-center gap-2">
+                        <i class="fas fa-sitemap text-[#87267e]"></i>Navigator
+                    </span>
+                    <span class="text-[10px] font-mono text-slate-400">P0001</span>
+                </div>
+                
+                <nav class="p-2 space-y-1">
+                    <a href="#sales-report" class="jde-nav-item flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 font-bold text-xs hover:text-[#87267e] nav-link" data-target="sales-report">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-[#87267e] fa-chart-line text-[#87267e] w-4 text-center"></i> Sales Analytics
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">R42565</span>
+                    </a>
+                    <a href="#view-products" class="jde-nav-item flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 font-bold text-xs hover:text-[#87267e] nav-link active" data-target="view-products">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-boxes-stacked text-[#87267e] w-4 text-center"></i> Product Master
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">P4101</span>
+                    </a>
+                    <a href="#add-product" class="jde-nav-item flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 font-bold text-xs hover:text-[#87267e] nav-link" data-target="add-product">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-plus-circle text-[#87267e] w-4 text-center"></i> Add New Product
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">P41011</span>
+                    </a>
+                    <a href="#view-orders" class="jde-nav-item flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 font-bold text-xs hover:text-[#87267e] nav-link" data-target="view-orders">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-shipping-fast text-[#87267e] w-4 text-center"></i> Order Processing
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">P4210</span>
+                    </a>
+                    <a href="#inbox" class="jde-nav-item flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 font-bold text-xs hover:text-[#87267e] nav-link" data-target="inbox">
+                        <span class="flex items-center gap-2.5">
+                            <i class="fas fa-comments text-[#87267e] w-4 text-center"></i> Feedback Inbox
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">P01012</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- JDE System Information Box -->
+            <div class="bg-white border border-slate-300 p-4 rounded-xl shadow-sm text-slate-600 text-xs space-y-2">
+                <p class="font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-circle-info text-[#87267e]"></i>System Info
+                </p>
+                <div class="space-y-1 text-[11px] font-mono border-t border-slate-100 pt-2">
+                    <div class="flex justify-between"><span>Enterprise Unit:</span> <span class="font-bold text-slate-800">{{ seller.name }}</span></div>
+                    <div class="flex justify-between"><span>Status:</span> <span class="text-emerald-600 font-bold">ONLINE</span></div>
+                    <div class="flex justify-between"><span>DB Driver:</span> <span class="text-slate-700">Django ORM / SQLite</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workstation Section Content -->
+        <main class="flex-grow space-y-6 fade-in-section min-w-0">
+
+            {% if messages %}
+            <div class="space-y-2 mb-4">
+                {% for message in messages %}
+                <div class="auto-dismiss-alert p-3.5 rounded-lg text-xs font-bold transition-all duration-300 shadow-sm flex items-center justify-between
+                            {% if message.tags == 'success' %} bg-emerald-50 text-emerald-800 border border-emerald-300 {% endif %}
+                            {% if message.tags == 'error' or message.tags == 'warning' %} bg-rose-50 text-rose-800 border border-rose-300 {% endif %}
+                            {% if message.tags == 'info' %} bg-sky-50 text-sky-800 border border-sky-300 {% endif %}"
+                    role="alert">
+                    <span><i class="fas fa-info-circle mr-2"></i> {{ message }}</span>
+                    <span class="font-mono text-[10px]">JDE_MSG_OK</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- 1. Sales Report Section (JDE Financial Analytics) -->
+            <section id="sales-report" class="dashboard-section hidden">
+                <div class="jde-card p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 pb-4 mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-extrabold text-slate-900 font-heading">Sales Analytics & Financial Reporting</h2>
+                                <span class="text-xs font-mono bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-slate-600 font-bold">Form R42565</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Financial Ledger Analysis for Unit Sales & Revenue Profitability</p>
+                        </div>
+                    </div>
+
+                    <!-- Month/Year Filter Form -->
+                    <form method="get" action="{% url 'seller_dashboard' %}#sales-report"
+                        class="bg-slate-50 border border-slate-200 p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 items-end">
+                        <div class="w-full md:w-1/3">
+                            <label for="month" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Fiscal Month</label>
+                            <select name="month" id="month"
+                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#87267e]">
+                                {% for month in months %}
+                                <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>{{ month.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="w-full md:w-1/3">
+                            <label for="year" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Fiscal Year</label>
+                            <select name="year" id="year"
+                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#87267e]">
+                                {% for year in years %}
+                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit"
+                            class="w-full md:w-auto bg-[#87267e] hover:bg-[#6c1e65] text-white font-bold py-2 px-6 rounded-lg shadow-sm transition text-xs flex items-center justify-center gap-2">
+                            <i class="fas fa-filter"></i> Run Ledger Query
+                        </button>
+                    </form>
+
+                    <!-- JDE Executive Summary KPI Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        <div class="bg-white border-l-4 border-l-emerald-600 border border-slate-200 p-4 rounded-xl shadow-sm flex items-center">
+                            <div class="p-3 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200">
+                                <i class="fas fa-indian-rupee-sign text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider">Gross Sales Ledger</p>
+                                <p class="text-2xl font-extrabold text-slate-900 font-heading">₹{{ total_sales|floatformat:2 }}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-l-sky-600 border border-slate-200 p-4 rounded-xl shadow-sm flex items-center">
+                            <div class="p-3 rounded-lg bg-sky-50 text-sky-600 border border-sky-200">
+                                <i class="fas fa-coins text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider">Net Unit Operating Profit</p>
+                                <p class="text-2xl font-extrabold font-heading {% if total_profit < 0 %}text-rose-600{% else %}text-slate-900{% endif %}">
+                                    ₹{{ total_profit|floatformat:2 }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-l-4 border-l-[#87267e] border border-slate-200 p-4 rounded-xl shadow-sm flex items-center">
+                            <div class="p-3 rounded-lg bg-purple-50 text-[#87267e] border border-purple-200">
+                                <i class="fas fa-boxes-stacked text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider">Total Units Shipped</p>
+                                <p class="text-2xl font-extrabold text-slate-900 font-heading">{{ total_products_sold }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JDE Performance Data Grid -->
+                    <div class="border border-slate-300 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-100 px-4 py-2.5 border-b border-slate-300 flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider font-heading">Product Sales Performance Grid</span>
+                            <span class="text-[11px] font-mono text-slate-500">Record Count: {{ product_sales|length }}</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead class="jde-grid-header">
+                                    <tr>
+                                        <th class="p-3">Product Name</th>
+                                        <th class="p-3">Units Sold</th>
+                                        <th class="p-3">Gross Revenue</th>
+                                        <th class="p-3">Net Profit Margin</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 text-xs">
+                                    {% for product in product_sales %}
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="p-3 font-bold text-slate-900 font-heading">{{ product.product__product_name }}</td>
+                                        <td class="p-3 text-slate-700 font-mono">{{ product.total_quantity_sold }}</td>
+                                        <td class="p-3 font-bold text-slate-900 font-mono">₹{{ product.total_revenue|floatformat:2 }}</td>
+                                        <td class="p-3 font-extrabold font-mono {% if product.total_profit < 0 %}text-rose-600{% else %}text-emerald-600{% endif %}">
+                                            ₹{{ product.total_profit|floatformat:2 }}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center p-8 text-slate-500 font-medium">
+                                            No financial transaction records found for the selected fiscal period.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Product Master Section (P4101) -->
             <section id="view-products" class="dashboard-section">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Products</h2>
-                <div class="bg-white p-4 rounded-lg shadow-md overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="p-4">Image</th>
-                                <th class="p-4">Product Name</th>
-                                <th class="p-4 hidden sm:table-cell">Category</th>
-                                <th class="p-4 hidden md:table-cell">Stock</th>
-                                <th class="p-4">Price</th>
-                                <th class="p-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for product in products %}
-                            <tr class="border-b">
-                                <td class="p-4"><img src="{{ product.photo.url }}" alt="{{ product.product_name }}" class="w-16 h-16 object-cover rounded-md"></td>
-                                <td class="p-4 font-medium text-gray-700">{{ product.product_name }}</td>
-                                <td class="p-4 hidden sm:table-cell">{{ product.category }}</td>
-                                <td class="p-4 hidden md:table-cell">{{ product.stock }}</td>
-                                <td class="p-4">₹{{ product.price }}</td>
-                                <td class="p-4 space-x-2">
-                                    <button class="update-btn bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
-                                            data-id="{{ product.id }}"
-                                            data-name="{{ product.product_name }}"
-                                            data-price="{{ product.price }}"
-                                            data-stock="{{ product.stock }}"
-                                            data-description="{{ product.description }}"
-                                            data-category="{{ product.category }}"
-                                            data-action="{% url 'update_product' product.id %}">
-                                        Update
-                                    </button>
-                                    <a href="{% url 'delete_product' product.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">Delete</a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="6" class="text-center p-8 text-gray-500">You haven't added any products yet.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="jde-card p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 mb-6 gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-extrabold text-slate-900 font-heading">Item Master Inventory</h2>
+                                <span class="text-xs font-mono bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-slate-600 font-bold">Form P4101</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Product Master File for Unit Catalog Items & Pricing</p>
+                        </div>
+                        <a href="#add-product" class="nav-link bg-[#87267e] hover:bg-[#6c1e65] text-white font-bold py-2 px-4 rounded-lg text-xs shadow-sm transition flex items-center gap-1.5" data-target="add-product">
+                            <i class="fas fa-plus"></i> Add Item Master
+                        </a>
+                    </div>
+
+                    <!-- JDE Product Data Grid -->
+                    <div class="border border-slate-300 rounded-xl overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead class="jde-grid-header">
+                                    <tr>
+                                        <th class="p-3">Product Description</th>
+                                        <th class="p-3">Category Class</th>
+                                        <th class="p-3">Stock On Hand</th>
+                                        <th class="p-3">Unit Price</th>
+                                        <th class="p-3 text-center">Form Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 text-xs">
+                                    {% for product in products %}
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="p-3">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="{{ product.photo_url }}" alt="{{ product.product_name }}" class="w-10 h-10 object-cover rounded-lg border border-slate-300">
+                                                <span class="font-bold text-slate-900 font-heading">{{ product.product_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-3">
+                                            <span class="bg-purple-50 text-[#87267e] border border-purple-200 font-bold px-2.5 py-0.5 rounded text-[11px] uppercase">{{ product.category }}</span>
+                                        </td>
+                                        <td class="p-3">
+                                            <span class="font-mono font-bold text-slate-700">{{ product.stock }} units</span>
+                                        </td>
+                                        <td class="p-3 font-extrabold text-slate-900 font-mono text-sm">₹{{ product.price }}</td>
+                                        <td class="p-3 text-center space-x-2">
+                                            <button class="update-btn bg-slate-100 text-slate-700 border border-slate-300 hover:bg-[#87267e] hover:text-white px-3 py-1.5 rounded-lg font-bold transition text-xs"
+                                                    data-id="{{ product.id }}"
+                                                    data-name="{{ product.product_name }}"
+                                                    data-price="{{ product.price }}"
+                                                    data-stock="{{ product.stock }}"
+                                                    data-description="{{ product.description }}"
+                                                    data-category="{{ product.category }}"
+                                                    data-action="{% url 'update_product' product.id %}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <a href="{% url 'delete_product' product.id %}"
+                                                class="bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-600 hover:text-white px-3 py-1.5 rounded-lg font-bold transition text-xs inline-block"
+                                                onclick="return confirm('Are you sure you want to remove this item master record?');">
+                                                <i class="fas fa-trash"></i> Remove
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center p-8 text-slate-500 font-medium">
+                                            No product items registered in Item Master database.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
 
+            <!-- 3. Add Product Section (P41011 Form) -->
             <section id="add-product" class="dashboard-section hidden">
-                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Add a New Product</h2>
-                 <div class="bg-white p-6 rounded-lg shadow-md">
-                     <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        {% csrf_token %}
-                         <div>
-                            <label for="product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                            <input type="text" name="product_name" id="product_name" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
-                         </div>
-                         <div>
-                            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                            <input type="text" name="category" id="category" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required placeholder="e.g., Spices, Crafts, Snacks">
-                         </div>
-                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                             <div>
-                                <label for="price" class="block text-sm font-medium text-gray-700">Price (₹)</label>
-                                <input type="number" name="price" id="price" step="0.01" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
-                             </div>
-                             <div>
-                                <label for="stock" class="block text-sm font-medium text-gray-700">Stock Quantity</label>
-                                <input type="number" name="stock" id="stock" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
-                             </div>
-                         </div>
-                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description" id="description" rows="4" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></textarea>
-                         </div>
-                         <div>
-                            <label for="photo" class="block text-sm font-medium text-gray-700">Product Image</label>
-                            <input type="file" name="photo" id="photo" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" required>
-                         </div>
-                         <div class="text-right">
-                            <button type="submit" class="bg-main text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition duration-300">Add Product</button>
-                         </div>
-                     </form>
-                 </div>
-            </section>
+                <div class="jde-card p-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-extrabold text-slate-900 font-heading">Product Master Maintenance Form</h2>
+                                <span class="text-xs font-mono bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-slate-600 font-bold">Form P41011</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Register new product item into Kudumbashree Item Master repository</p>
+                        </div>
+                    </div>
 
-            <section id="view-orders" class="dashboard-section hidden">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Customer Orders</h2>
-                <div class="bg-white p-4 rounded-lg shadow-md overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="p-4">Order ID</th>
-                                <th class="p-4">Customer</th>
-                                <th class="p-4 hidden sm:table-cell">Date</th>
-                                <th class="p-4">Total</th>
-                                <th class="p-4">Status</th>
-                                <th class="p-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                            <tr class="border-b">
-                                <td class="p-4 font-medium text-gray-700">#{{ order.id }}</td>
-                                <td class="p-4">{{ order.customer.name }}</td>
-                                <td class="p-4 hidden sm:table-cell">{{ order.created_at|date:"M d, Y" }}</td>
-                                <td class="p-4">₹{{ order.total_price }}</td>
-                                <td class="p-4">
-                                    {% if order.status == 'Confirmed' %}
-                                        <span class="text-green-600 font-semibold">{{ order.status }}</span>
-                                    {% elif order.status == 'Cancelled' %}
-                                        <span class="text-red-600 font-semibold">{{ order.status }}</span>
-                                    {% else %}
-                                        <span class="text-yellow-600 font-semibold">{{ order.status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="p-4 space-x-2">
-                                    {% if order.status == 'Pending' %}
-                                    <a href="{% url 'confirm_order' order.id %}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm">Confirm</a>
-                                    <a href="{% url 'delete_order' order.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">Cancel</a>
-                                    {% else %}
-                                    <span class="text-gray-400 text-sm">No actions</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="6" class="text-center p-8 text-gray-500">You have no orders yet.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data" class="space-y-5 text-xs">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label for="product_name" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Product Description <span class="text-rose-500">*</span></label>
+                                <input type="text" name="product_name" id="product_name" class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg font-medium text-slate-800 focus:outline-none focus:border-[#87267e]" required placeholder="e.g. Traditional Handcrafted Chips">
+                            </div>
+                            <div>
+                                <label for="category" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Category Classification <span class="text-rose-500">*</span></label>
+                                <select name="category" id="category" class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg font-semibold text-slate-800 focus:outline-none focus:border-[#87267e]" required>
+                                    <option value="" disabled selected>Select Category Class</option>
+                                    <option value="Food & Spices">Food & Spices</option>
+                                    <option value="Handicrafts">Handicrafts & Arts</option>
+                                    <option value="Personal Care">Personal Care & Cosmetics</option>
+                                    <option value="Organic Produce">Organic Produce</option>
+                                    <option value="Garments">Textiles & Garments</option>
+                                    <option value="Home Essentials">Home Essentials</option>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div>
+                                <label for="price" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Selling Unit Price (₹) <span class="text-rose-500">*</span></label>
+                                <input type="number" name="price" id="price" step="0.01" min="0" class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg font-mono font-medium text-slate-800 focus:outline-none focus:border-[#87267e]" required placeholder="0.00">
+                            </div>
+                            <div>
+                                <label for="cost_price" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Production Cost Price (₹) <span class="text-rose-500">*</span></label>
+                                <input type="number" name="cost_price" id="cost_price" step="0.01" min="0" class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg font-mono font-medium text-slate-800 focus:outline-none focus:border-[#87267e]" required placeholder="Cost">
+                            </div>
+                            <div>
+                                <label for="stock" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Initial Stock Inventory <span class="text-rose-500">*</span></label>
+                                <input type="number" name="stock" id="stock" min="0" class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg font-mono font-medium text-slate-800 focus:outline-none focus:border-[#87267e]" required placeholder="10">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="description" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Product Specifications & Detail</label>
+                            <textarea name="description" id="description" rows="3" class="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg font-medium text-slate-800 focus:outline-none focus:border-[#87267e] resize-none" required placeholder="Item description..."></textarea>
+                        </div>
+
+                        <div>
+                            <label for="photo" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Item Image Upload <span class="text-rose-500">*</span></label>
+                            <input type="file" name="photo" id="photo" class="block w-full text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-slate-300 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-[#87267e] hover:file:text-white transition cursor-pointer" required>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-200 text-right">
+                            <button type="submit" class="bg-[#87267e] hover:bg-[#6c1e65] text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition flex items-center gap-2 ml-auto">
+                                <i class="fas fa-save"></i> Save Product Master Entry
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </section>
 
+            <!-- 4. Customer Orders Section (P4210 Dispatch Control) -->
+            <section id="view-orders" class="dashboard-section hidden">
+                <div class="jde-card p-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-extrabold text-slate-900 font-heading">Order Dispatch & Sales Order Center</h2>
+                                <span class="text-xs font-mono bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-slate-600 font-bold">Form P4210</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Sales Order Processing for Delivery Packaging & Seller Confirmation</p>
+                        </div>
+                    </div>
 
+                    <!-- JDE Customer Orders Data Grid -->
+                    <div class="border border-slate-300 rounded-xl overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead class="jde-grid-header">
+                                    <tr>
+                                        <th class="p-3">Order ID & Date</th>
+                                        <th class="p-3">Customer Details</th>
+                                        <th class="p-3">Ordered Products</th>
+                                        <th class="p-3">Complete Address</th>
+                                        <th class="p-3">Payment Amount</th>
+                                        <th class="p-3">Payment Mode</th>
+                                        <th class="p-3 text-center">Seller Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 text-xs">
+                                    {% for order in orders %}
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="p-3">
+                                            <span class="font-extrabold text-slate-900 font-mono block">#{{ order.id }}</span>
+                                            <span class="text-[11px] text-slate-500">{{ order.created_at|date:"M d, Y" }}</span>
+                                        </td>
+                                        <td class="p-3 font-medium text-slate-700">
+                                            <div class="flex items-center space-x-2.5">
+                                                <div class="h-8 w-8 rounded-full bg-[#87267e]/10 text-[#87267e] font-extrabold flex items-center justify-center text-xs font-heading">
+                                                    {% if order.first_name %}{{ order.first_name|slice:":1" }}{% else %}{{ order.customer.name|slice:":1" }}{% endif %}
+                                                </div>
+                                                <div>
+                                                    <span class="font-bold text-slate-900 block">{% if order.first_name %}{{ order.first_name }} {{ order.last_name }}{% else %}{{ order.customer.name }}{% endif %}</span>
+                                                    <span class="text-[11px] text-slate-500 font-mono block">📞 {{ order.phone|default:order.customer.phone }}</span>
+                                                    {% if order.email %}<span class="text-[10px] text-slate-400 font-mono block">{{ order.email }}</span>{% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-3 max-w-xs whitespace-normal">
+                                            <div class="space-y-1.5">
+                                                {% for item in order.items.all %}
+                                                    {% if item.product.seller == seller %}
+                                                    <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 p-1.5 rounded-lg">
+                                                        <img src="{{ item.product.photo_url }}" alt="{{ item.product.product_name }}" class="w-8 h-8 object-cover rounded border border-slate-300 shrink-0">
+                                                        <div class="text-[11px]">
+                                                            <span class="font-bold text-slate-900 block font-heading line-clamp-1">{{ item.product.product_name }}</span>
+                                                            <span class="text-slate-500 font-mono">{{ item.quantity }} × ₹{{ item.price }}</span>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+                                        <td class="p-3 max-w-xs whitespace-normal text-slate-700">
+                                            <p class="font-semibold text-slate-800">{{ order.address }}</p>
+                                            <p class="text-slate-500 text-[11px]">{{ order.city }}, {{ order.state }} - {{ order.zip_code }}</p>
+                                        </td>
+                                        <td class="p-3 font-extrabold text-slate-900 font-mono text-sm">₹{{ order.total_price }}</td>
+                                        <td class="p-3">
+                                            {% if order.payment %}
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-1 rounded">
+                                                <i class="fas fa-credit-card text-purple-600"></i> Online (Razorpay)
+                                            </span>
+                                            {% else %}
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded">
+                                                <i class="fas fa-money-bill-wave text-emerald-600"></i> Cash on Delivery
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="p-3 text-center">
+                                            {% if order.status == 'Pending' %}
+                                            <a href="{% url 'confirm_order' order.id %}" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-lg shadow-sm transition text-xs">
+                                                <i class="fas fa-box-check"></i> Order Packed Confirmed by Seller
+                                            </a>
+                                            {% else %}
+                                            <span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm">
+                                                <i class="fas fa-check-circle"></i> Packed & Confirmed
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center p-8 text-slate-500 font-medium">
+                                            No sales order dispatch requests currently queued.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Customer Feedback Inbox Section (P01012) -->
             <section id="inbox" class="dashboard-section hidden">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Inbox / Feedback</h2>
-                <div class="space-y-4">
-                    {% for feedback in feedbacks %}
-                    <div class="bg-white p-4 rounded-lg shadow-md">
-                        <div class="flex justify-between items-center mb-2">
-                            <p class="font-semibold text-gray-800">{{ feedback.customer.name }}</p>
-                            <p class="text-xs text-gray-400">{{ feedback.created_at|date:"F d, Y" }}</p>
-                        </div>
-                        <p class="text-gray-600">{{ feedback.feedback_text }}</p>
-                        <div class="text-right mt-2">
-                            <a href="{% url 'delete_feedback' feedback.id %}" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</a>
+                <div class="jde-card p-6">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-xl font-extrabold text-slate-900 font-heading">Customer Feedback Inbox</h2>
+                                <span class="text-xs font-mono bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-slate-600 font-bold">Form P01012</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-1">Address Book Feedback & Review Audit Log</p>
                         </div>
                     </div>
-                    {% empty %}
-                    <div class="bg-white p-8 rounded-lg shadow-md text-center text-gray-500">
-                        Your inbox is empty.
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {% for feedback in feedbacks %}
+                        <div class="bg-white border border-slate-300 p-5 rounded-xl shadow-sm space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="h-8 w-8 rounded-full bg-[#87267e]/10 text-[#87267e] flex items-center justify-center font-bold text-xs font-heading">
+                                        {{ feedback.customer.name|slice:":1" }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-900 text-xs">{{ feedback.customer.name }}</p>
+                                        <p class="text-[10px] text-slate-400 font-mono">{{ feedback.created_at|date:"M d, Y" }}</p>
+                                    </div>
+                                </div>
+                                <a href="{% url 'delete_feedback' feedback.id %}" class="text-slate-400 hover:text-rose-600 p-1 transition" title="Delete Feedback">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </a>
+                            </div>
+
+                            {% if feedback.product %}
+                            <div class="flex items-center space-x-3 bg-purple-50/70 border border-purple-200 p-2.5 rounded-lg">
+                                <img src="{{ feedback.product.photo_url }}" alt="{{ feedback.product.product_name }}" class="w-10 h-10 object-cover rounded border border-purple-300">
+                                <div class="text-xs">
+                                    <span class="text-[10px] font-extrabold uppercase text-[#87267e] block">Product Review</span>
+                                    <p class="font-bold text-slate-900 font-heading">{{ feedback.product.product_name }}</p>
+                                    <div class="flex items-center space-x-1 text-amber-400 text-[11px]">
+                                        <span>
+                                            {% if feedback.rating == 5 %}★★★★★
+                                            {% elif feedback.rating == 4 %}★★★★<span class="text-slate-300">★</span>
+                                            {% elif feedback.rating == 3 %}★★★<span class="text-slate-300">★★</span>
+                                            {% elif feedback.rating == 2 %}★★<span class="text-slate-300">★★★</span>
+                                            {% else %}★<span class="text-slate-300">★★★★</span>
+                                            {% endif %}
+                                        </span>
+                                        <span class="text-slate-500 font-bold ml-1">({{ feedback.rating }}/5)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <p class="text-slate-700 italic text-xs">"{{ feedback.feedback_text }}"</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-span-full text-center p-8 bg-white border border-slate-300 rounded-xl text-slate-500 text-xs">
+                            No feedback logged in Address Book system.
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
             </section>
         </main>
     </div>
 
-    <div id="update-modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-30 p-4 opacity-0">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-xl font-bold text-gray-800">Update Product</h3>
-                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+    <!-- Update Product Modal -->
+    <div id="update-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center hidden z-50 p-4 opacity-0 transition-opacity duration-200">
+        <div class="bg-white border border-slate-300 rounded-xl shadow-xl p-6 w-full max-w-xl transform transition-all duration-200 scale-95 opacity-0">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <h3 class="text-lg font-extrabold text-slate-900 font-heading">Update Item Master</h3>
+                    <span class="text-xs font-mono bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-slate-600 font-bold">P4101 Edit</span>
+                </div>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-800 text-lg">&times;</button>
             </div>
-            <form id="update-form" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <form id="update-form" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
                 {% csrf_token %}
                 <div>
-                    <label for="update_product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
-                    <input type="text" name="product_name" id="update_product_name" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                    <label for="update_product_name" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Product Description</label>
+                    <input type="text" name="product_name" id="update_product_name" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-medium text-slate-800 focus:outline-none focus:border-[#87267e]" required>
                 </div>
                 <div>
-                    <label for="update_category" class="block text-sm font-medium text-gray-700">Category</label>
-                    <input type="text" name="category" id="update_category" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                    <label for="update_category" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Category Classification</label>
+                    <select name="category" id="update_category" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-semibold text-slate-800 focus:outline-none focus:border-[#87267e]" required>
+                        <option value="Food & Spices">Food & Spices</option>
+                        <option value="Handicrafts">Handicrafts & Arts</option>
+                        <option value="Personal Care">Personal Care & Cosmetics</option>
+                        <option value="Organic Produce">Organic Produce</option>
+                        <option value="Garments">Textiles & Garments</option>
+                        <option value="Home Essentials">Home Essentials</option>
+                        <option value="General">General</option>
+                    </select>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="update_price" class="block text-sm font-medium text-gray-700">Price (₹)</label>
-                        <input type="number" name="price"  min="0" id="update_price" step="0.01" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                        <label for="update_price" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Selling Unit Price (₹)</label>
+                        <input type="number" name="price" min="0" id="update_price" step="0.01" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-mono text-slate-800 focus:outline-none focus:border-[#87267e]" required>
                     </div>
                     <div>
-                        <label for="update_stock" class="block text-sm font-medium text-gray-700">Stock Quantity</label>
-                        <input type="number" name="stock"  min="0" id="update_stock" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required>
+                        <label for="update_stock" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Stock Quantity</label>
+                        <input type="number" name="stock" min="0" id="update_stock" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-mono text-slate-800 focus:outline-none focus:border-[#87267e]" required>
                     </div>
                 </div>
                 <div>
-                    <label for="update_description" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea name="description" id="update_description" rows="3" class="form-input mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></textarea>
+                    <label for="update_description" class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Product Description</label>
+                    <textarea name="description" id="update_description" rows="3" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-[#87267e] resize-none" required></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Product Image</label>
-                    <p class="text-xs text-gray-500 mb-2">Upload a new image to replace the current one.</p>
-                    <input type="file" name="photo" id="update_photo" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+                    <label class="block font-bold uppercase tracking-wider text-slate-600 mb-1">Update Item Photo (Optional)</label>
+                    <input type="file" name="photo" id="update_photo" class="block w-full text-xs text-slate-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-slate-300 file:text-xs file:font-bold file:bg-slate-100 hover:file:bg-[#87267e] hover:file:text-white transition">
                 </div>
-                <div class="text-right pt-4">
-                    <button type="button" id="cancel-update-btn" class="bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 transition duration-300 mr-2">Cancel</button>
-                    <button type="submit" class="bg-main text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition duration-300">Save Changes</button>
+                <div class="pt-3 border-t border-slate-200 flex justify-end gap-2">
+                    <button type="button" id="cancel-update-btn" class="bg-white border border-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg hover:bg-slate-100 transition">Cancel</button>
+                    <button type="submit" class="bg-[#87267e] hover:bg-[#6c1e65] text-white font-bold py-2 px-4 rounded-lg shadow-sm transition">Update Master Record</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Modern E-Commerce Footer matching index.html -->
+    <footer class="bg-slate-950 text-slate-300 relative overflow-hidden border-t border-slate-800 mt-16">
+        <div class="container mx-auto px-4 lg:px-8 py-16 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8">
+                <!-- Brand Info -->
+                <div class="flex flex-col items-start">
+                    <div class="bg-white p-2.5 rounded-2xl shadow-md mb-4 border border-slate-800">
+                        <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12 object-contain">
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white mb-2 tracking-tight font-heading">Kudumbashree Store</h3>
+                    <p class="text-slate-400 font-medium text-sm leading-relaxed mb-4">Empowering over 50,000 women micro-entrepreneurs across Kerala through authentic, direct-to-consumer heritage commerce.</p>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">🌿 Government Recognized Initiative</span>
+                </div>
 
+                <!-- Navigation Links -->
+                <div>
+                    <h4 class="font-extrabold text-white mb-4 text-base font-heading">Quick Navigation</h4>
+                    <ul class="space-y-3 font-semibold text-sm text-slate-400">
+                        <li><a href="{% url 'customer_dashboard' %}" class="hover:text-amber-400 transition-colors">Home Store</a></li>
+                        <li><a href="{% url 'products' %}" class="hover:text-amber-400 transition-colors">Catalog Products</a></li>
+                        <li><a href="{% url 'community' %}" class="hover:text-amber-400 transition-colors">Community Feed</a></li>
+                        <li><a href="{% url 'about' %}" class="hover:text-amber-400 transition-colors">Empowerment Story</a></li>
+                        <li><a href="{% url 'seller_dashboard' %}" class="hover:text-amber-400 transition-colors">Seller Portal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Category Map -->
+                <div>
+                     <h4 class="font-extrabold text-white mb-4 text-base font-heading">Shop Categories</h4>
+                    <ul class="space-y-3 font-semibold text-sm text-slate-400">
+                        <li><a href="{% url 'products' %}?category=Food" class="hover:text-amber-400 transition-colors">Traditional Food & Spices</a></li>
+                        <li><a href="{% url 'products' %}?category=Handicrafts" class="hover:text-amber-400 transition-colors">Artisanal Handicrafts</a></li>
+                        <li><a href="{% url 'products' %}?category=Garments" class="hover:text-amber-400 transition-colors">Handloom Sarees & Textiles</a></li>
+                        <li><a href="{% url 'products' %}?category=Organic" class="hover:text-amber-400 transition-colors">Organic Wellness & Organics</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter & Trust Pay -->
+                <div>
+                    <h4 class="font-extrabold text-white mb-4 text-base font-heading">Subscribe for Offers</h4>
+                    <p class="text-slate-400 font-medium text-xs mb-4">Receive fresh catalog arrivals, festive discount codes, and artisan stories directly.</p>
+                    <form class="flex relative shadow-lg mb-6">
+                        <input type="email" placeholder="Enter your email..." class="w-full pl-4 pr-12 py-3 bg-slate-900 border border-slate-800 text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#87267e] focus:outline-none">
+                        <button type="submit" class="absolute right-1 top-1 bottom-1 bg-[#87267e] hover:bg-[#6c1e65] text-white px-4 rounded-xl transition shadow-md font-bold text-xs">
+                            Join
+                        </button>
+                    </form>
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <span>🔒 100% Secure Payment:</span>
+                        <span class="font-bold text-slate-200">UPI • Cards • COD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 border-t border-slate-900 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 font-semibold tracking-wide">
+                <p>&copy; 2026 Kudumbashree State Poverty Eradication Mission. All rights reserved.</p>
+                <div class="mt-4 md:mt-0 space-x-6">
+                    <a href="#" class="hover:text-slate-300 transition">Terms of Service</a>
+                    <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-300 transition">Fair Trade Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JDE Interactivity JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Navigation logic
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('.dashboard-section');
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.dashboard-section');
+        const fastPathInput = document.getElementById('jde-fast-path');
 
-            function showSection(targetId) {
-                sections.forEach(section => {
-                    section.classList.toggle('hidden', section.id !== targetId);
-                });
-                navLinks.forEach(link => {
-                    link.classList.toggle('active', link.dataset.target === targetId);
-                });
-            }
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.dataset.target;
-                    showSection(targetId);
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            });
-
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Modal logic
-            const updateModal = document.getElementById('update-modal');
-            const updateModalPanel = updateModal.querySelector('div');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const cancelUpdateBtn = document.getElementById('cancel-update-btn');
-            const updateForm = document.getElementById('update-form');
-            const updateButtons = document.querySelectorAll('.update-btn');
-
-            function openModal() {
-                updateModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                // Trigger transition
-                setTimeout(() => {
-                    updateModal.classList.remove('opacity-0');
-                    updateModalPanel.classList.remove('scale-95', 'opacity-0');
-                }, 10);
-            }
-
-            function closeModal() {
-                updateModalPanel.classList.add('scale-95', 'opacity-0');
-                 setTimeout(() => {
-                    updateModal.classList.add('opacity-0');
-                    document.body.style.overflow = '';
-                    setTimeout(() => updateModal.classList.add('hidden'), 300);
-                }, 150);
-            }
-
-            updateButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const dataset = this.dataset;
-                    
-                    // Set form action
-                    updateForm.action = dataset.action;
-                    
-                    // Populate form fields
-                    document.getElementById('update_product_name').value = dataset.name;
-                    document.getElementById('update_price').value = parseFloat(dataset.price.replace('₹','')).toFixed(2);
-                    document.getElementById('update_stock').value = dataset.stock;
-                    document.getElementById('update_description').value = dataset.description;
-                    document.getElementById('update_category').value = dataset.category; // Populate category
-                    
-                    openModal();
-                });
-            });
-
-            closeModalBtn.addEventListener('click', closeModal);
-            cancelUpdateBtn.addEventListener('click', closeModal);
-            updateModal.addEventListener('click', function(e) {
-                if (e.target === updateModal) {
-                    closeModal();
+        function showSection(targetId) {
+            sections.forEach(section => {
+                if (section.id === targetId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
                 }
             });
-        });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.target === targetId);
+            });
+            localStorage.setItem('activeJdeSection', targetId);
+        }
 
-        
-
-        //page reload storage
-
-           document.addEventListener('DOMContentLoaded', function () {
-    // Smooth fade-in + slide effect
-       document.body.style.opacity = 0;
-       document.body.style.transform = "translateY(2px)";
-       document.body.style.transition = "opacity 2s ease, transform 2s ease";
-       setTimeout(() => { 
-       document.body.style.opacity = 1; 
-       document.body.style.transform = "translateY(0)";
-       }, 100);
-
-
-    // Navigation logic
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.dashboard-section');
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    // Function to show a section with smooth transition
-    function showSection(targetId) {
-        sections.forEach(section => {
-            if (section.id === targetId) {
-                section.classList.remove('hidden');
-                section.style.opacity = 0;
-                section.style.transition = "opacity 0.5s ease";
-                setTimeout(() => section.style.opacity = 1, 20);
+        function handleHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                showSection(hash);
             } else {
-                section.style.opacity = 0;
-                setTimeout(() => section.classList.add('hidden'), 300);
+                const savedSection = localStorage.getItem('activeJdeSection') || 'view-products';
+                showSection(savedSection);
             }
-        });
+        }
+
+        handleHash();
+        window.addEventListener('hashchange', handleHash);
+
         navLinks.forEach(link => {
-            link.classList.toggle('active', link.dataset.target === targetId);
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                showSection(this.dataset.target);
+                window.location.hash = this.dataset.target;
+            });
         });
-        localStorage.setItem('activeSection', targetId);
-    }
 
-    // Restore saved section
-    const savedSection = localStorage.getItem('activeSection') || 'view-products';
-    showSection(savedSection);
+        // Fast Path JDE search shortcut
+        if (fastPathInput) {
+            fastPathInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const val = this.value.trim().toLowerCase();
+                    if (val.includes('sales') || val.includes('r42565')) showSection('sales-report');
+                    else if (val.includes('add') || val.includes('p41011')) showSection('add-product');
+                    else if (val.includes('order') || val.includes('p4210')) showSection('view-orders');
+                    else if (val.includes('feedback') || val.includes('p01012')) showSection('inbox');
+                    else showSection('view-products');
+                }
+            });
+        }
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            showSection(this.dataset.target);
-            if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
+        // Message timer
+        const alerts = document.querySelectorAll('.auto-dismiss-alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.style.display = 'none', 300);
+            }, 2500);
         });
-    });
 
-    mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        // JDE Modal logic
+        const updateModal = document.getElementById('update-modal');
+        const updateModalPanel = updateModal ? updateModal.querySelector('div') : null;
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelUpdateBtn = document.getElementById('cancel-update-btn');
+        const updateForm = document.getElementById('update-form');
+        const updateButtons = document.querySelectorAll('.update-btn');
 
-    // Modal logic
-    const updateModal = document.getElementById('update-modal');
-    const updateModalPanel = updateModal.querySelector('div');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const cancelUpdateBtn = document.getElementById('cancel-update-btn');
-    const updateForm = document.getElementById('update-form');
-    const updateButtons = document.querySelectorAll('.update-btn');
+        function openModal() {
+            if (!updateModal) return;
+            updateModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                updateModal.classList.remove('opacity-0');
+                if (updateModalPanel) updateModalPanel.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
 
-    function openModal() {
-        updateModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => {
-            updateModal.classList.remove('opacity-0');
-            updateModalPanel.classList.remove('scale-95', 'opacity-0');
-        }, 10);
-    }
+        function closeModal() {
+            if (!updateModal) return;
+            if (updateModalPanel) updateModalPanel.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                updateModal.classList.add('opacity-0');
+                document.body.style.overflow = '';
+                setTimeout(() => updateModal.classList.add('hidden'), 200);
+            }, 150);
+        }
 
-    function closeModal() {
-        updateModalPanel.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            updateModal.classList.add('opacity-0');
-            document.body.style.overflow = '';
-            setTimeout(() => updateModal.classList.add('hidden'), 300);
-        }, 150);
-    }
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const dataset = this.dataset;
+                updateForm.action = dataset.action;
+                document.getElementById('update_product_name').value = dataset.name;
+                document.getElementById('update_price').value = parseFloat(dataset.price.replace('₹','')).toFixed(2);
+                document.getElementById('update_stock').value = dataset.stock;
+                document.getElementById('update_description').value = dataset.description;
+                
+                const selectCategory = document.getElementById('update_category');
+                if (selectCategory) {
+                    let found = false;
+                    for (let opt of selectCategory.options) {
+                        if (opt.value.toLowerCase() === dataset.category.toLowerCase()) {
+                            selectCategory.value = opt.value;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) selectCategory.value = 'General';
+                }
 
-    updateButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const dataset = this.dataset;
-            updateForm.action = dataset.action;
-            document.getElementById('update_product_name').value = dataset.name;
-            document.getElementById('update_price').value = parseFloat(dataset.price.replace('₹','')).toFixed(2);
-            document.getElementById('update_stock').value = dataset.stock;
-            document.getElementById('update_description').value = dataset.description;
-            document.getElementById('update_category').value = dataset.category;
-            openModal();
+                openModal();
+            });
         });
-    });
 
-    closeModalBtn.addEventListener('click', closeModal);
-    cancelUpdateBtn.addEventListener('click', closeModal);
-    updateModal.addEventListener('click', e => { if (e.target === updateModal) closeModal(); });
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        if (cancelUpdateBtn) cancelUpdateBtn.addEventListener('click', closeModal);
+        if (updateModal) {
+            updateModal.addEventListener('click', e => { if (e.target === updateModal) closeModal(); });
+        }
     });
     </script>
 </body>

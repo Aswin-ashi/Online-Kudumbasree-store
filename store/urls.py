@@ -29,8 +29,10 @@ urlpatterns = [
     # --- Main Site Pages (Customer Facing) ---
      path('home/', views.customer_dashboard, name='customer_dashboard'),
     path('products/', views.products_page, name='products'),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
     path('about/', views.about, name='about'),
     path('community/', views.community, name='community'),
+    path('community/inspired/<int:post_id>/', views.toggle_inspired, name='toggle_inspired'),
     path('cart/', views.cart, name='cart'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/update/<int:item_id>/<str:action>/', views.update_cart, name='update_cart'),
