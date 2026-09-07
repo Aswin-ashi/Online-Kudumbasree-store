@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#87267e">
+    <meta name="theme-color" content="#87267e">
+    <link rel="manifest" href="{% static 'img/manifest.json' %}">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
+    <title>Kudumbashree Online Store - Premium Authentic Heritage & Local Organics</title>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #87267e;
+            --primary-hover: #6c1e65;
+            --primary-light: rgba(135, 38, 126, 0.08);
+            --accent-gold: #f59e0b;
+            --accent-emerald: #10b981;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .border-primary { border-color: var(--primary-color); }
+
+        /* Top-Tier E-Commerce Glass Cards */
+        .ecom-card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .ecom-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(135, 38, 126, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
+            border-color: rgba(135, 38, 126, 0.3);
+        }
+
+        /* Smooth section transitions */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Slider */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+        }
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            height: 100%;
+        }
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .slide-content {
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.45) 60%, rgba(15, 23, 42, 0.1) 100%);
+            position: absolute;
+            inset: 0;
+        }
+        .slider-nav {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.6rem;
+            z-index: 20;
+        }
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .slider-dot.active {
+            width: 32px;
+            background-color: #ffffff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+        }
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .line-clamp-2 {
+           overflow: hidden;
+           display: -webkit-box;
+           -webkit-box-orient: vertical;
+           -webkit-line-clamp: 2;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden relative">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-[#87267e] via-[#6c1e65] to-purple-900 text-white py-2.5 px-4 text-center text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-inner">
+        <span class="bg-amber-400 text-slate-950 font-extrabold px-2 py-0.5 rounded-full text-[10px] uppercase">Festive Offer</span>
+        <span>🎉 Free Express Delivery on Kerala Heritage Orders Over ₹500 | Direct from Women Micro-Entrepreneurs</span>
+        <a href="{% url 'products' %}" class="underline font-bold hover:text-amber-200 ml-2 hidden sm:inline">Shop Catalog →</a>
+    </div>
+
+    <!-- Header Section -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between py-3.5">
+                <!-- Logo -->
+                <a href="{% url 'customer_dashboard' %}" class="flex items-center space-x-3 group">
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 group-hover:border-[#87267e]/30 group-hover:shadow-md transition-all">
+                        <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-10 w-10 object-contain">
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl md:text-2xl font-extrabold text-[#87267e] tracking-tight font-heading group-hover:text-purple-900 transition-colors">K-Store</span>
+                        <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400 -mt-1">Kudumbashree</span>
+                    </div>
+                </a>
+
+                <!-- Search Bar with Category Pill Selector -->
+                <form action="{% url 'products' %}" method="get" class="hidden lg:flex items-center relative max-w-lg w-full mx-8">
+                    <div class="relative w-full flex items-center bg-slate-100/80 border border-slate-200 rounded-full focus-within:bg-white focus-within:border-[#87267e] focus-within:ring-4 focus-within:ring-[#87267e]/15 transition-all shadow-inner">
+                        <input type="text" name="q" placeholder="Search spices, handicrafts, organic food..." class="w-full pl-5 pr-12 py-2.5 text-sm font-medium bg-transparent border-none focus:outline-none text-slate-800 placeholder-slate-400">
+                        <button type="submit" class="absolute right-1.5 p-2 bg-[#87267e] hover:bg-[#6c1e65] text-white rounded-full transition-all shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-7">
+                    <a href="{% url 'customer_dashboard' %}" class="font-bold text-[#87267e] relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#87267e] transition">Home</a>
+                    <a href="{% url 'products' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">Products</a>
+                    <a href="{% url 'community' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">Community Feed</a>
+                    <a href="{% url 'about' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">About Mission</a>
+                </nav>
+
+                <!-- Action Icons -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="{% url 'my_orders' %}" class="p-2.5 text-slate-600 hover:text-[#87267e] hover:bg-[#87267e]/10 rounded-2xl transition-all flex items-center gap-1.5" title="My Orders">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" /></svg>
+                        <span class="text-xs font-bold text-slate-700 hidden lg:inline">Orders</span>
+                    </a>
+
+                    <a href="{% url 'cart' %}" class="relative p-2.5 text-slate-600 hover:text-[#87267e] hover:bg-[#87267e]/10 rounded-2xl transition-all" aria-label="Cart">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        <span class="cart-count absolute top-1 right-1 bg-[#87267e] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ cart_item_count|default:0 }}</span>
+                    </a>
+
+                    <div class="relative">
+                        <button id="profile-btn" class="p-1 rounded-full border-2 border-transparent hover:border-[#87267e] transition" aria-label="Profile">
+                             {% if customer.photo %}
+                                <img src="{{ customer.photo.url }}" alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm">
+                            {% else %}
+                                <div class="w-9 h-9 rounded-full bg-[#87267e]/10 text-[#87267e] flex items-center justify-center font-bold text-sm border border-[#87267e]/20">
+                                    {{ customer.name|default:"U"|first|upper }}
+                                </div>
+                            {% endif %}
+                        </button>
+                        {% if customer %}
+                        <div id="profile-dropdown" class="absolute right-0 mt-3 w-72 bg-white rounded-3xl shadow-xl border border-slate-100 py-2 z-50 hidden transition-all">
+                            <div class="px-5 py-4 border-b border-slate-100">
+                                <div class="flex items-center">
+                                    {% if customer.photo %}
+                                    <img src="{{ customer.photo.url }}" alt="{{ customer.name }}" class="w-11 h-11 object-cover rounded-full mr-3 border border-slate-200">
+                                    {% else %}
+                                    <div class="w-11 h-11 rounded-full mr-3 bg-[#87267e]/10 flex items-center justify-center text-[#87267e] font-bold text-lg border border-[#87267e]/20">{{ customer.name|first|upper }}</div>
+                                    {% endif %}
+                                    <div class="overflow-hidden">
+                                        <p class="font-extrabold text-slate-800 text-sm truncate font-heading">{{ customer.name }}</p>
+                                        <p class="text-xs text-slate-400 font-medium truncate">{{ customer.phone }}</p>
+                                    </div>
+                                    <button id="edit-profile-btn" class="ml-auto p-1.5 text-slate-400 hover:text-[#87267e] hover:bg-slate-100 rounded-xl transition" title="Edit Profile">
+                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L13.196 5.232z" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="{% url 'my_orders' %}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#87267e] transition">
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" /></svg>
+                                    My Orders
+                                </a>
+                                <a href="{% url 'logout' %}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition border-t border-slate-100 mt-1">
+                                    <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                    Sign Out
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 text-slate-600 rounded-xl hover:bg-slate-100 transition">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 shadow-xl">
+             <a href="{% url 'customer_dashboard' %}" class="block px-6 py-3.5 text-slate-800 font-bold border-b border-slate-50 hover:bg-slate-50 transition">Home</a>
+             <a href="{% url 'products' %}" class="block px-6 py-3.5 text-slate-600 font-semibold border-b border-slate-50 hover:bg-slate-50 transition">Products</a>
+             <a href="{% url 'community' %}" class="block px-6 py-3.5 text-slate-600 font-semibold border-b border-slate-50 hover:bg-slate-50 transition">Community Feed</a>
+             <a href="{% url 'about' %}" class="block px-6 py-3.5 text-slate-600 font-semibold border-b border-slate-50 hover:bg-slate-50 transition">About Us</a>
+             <div class="px-6 py-3">
+                 <form action="{% url 'products' %}" method="get" class="relative">
+                    <input type="text" name="q" placeholder="Search..." class="w-full px-4 py-2.5 text-sm bg-slate-100 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#87267e]">
+                 </form>
+             </div>
+             <div class="flex justify-around py-4 border-t border-slate-100 bg-slate-50">
+                <a href="{% url 'my_orders' %}" class="text-slate-600 font-semibold text-xs flex flex-col items-center gap-1">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" /></svg>
+                    Orders
+                </a>
+                <a href="{% url 'cart' %}" class="text-slate-600 font-semibold text-xs flex flex-col items-center gap-1 relative">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    Cart
+                </a>
+                <a href="{% url 'logout' %}" class="text-rose-600 font-semibold text-xs flex flex-col items-center gap-1">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Logout
+                </a>
+             </div>
+        </div>
+    </header>
+             {% if customer %}
+             <div id="mobile-profile-dropdown" class="hidden border-t px-4 py-3">
+                <div class="flex items-center">
+                    <img src="{{ customer.photo.url }}" alt="{{ customer.name }}" class="w-12 h-12 object-cover rounded-full mr-4">
+                    <div>
+                        <p class="font-semibold text-gray-800">{{ customer.name }}</p>
+                        <p class="text-sm text-gray-500">{{ customer.phone }}</p>
+                    </div>
+                    <button id="mobile-edit-profile-btn" class="ml-auto text-primary hover:text-purple-800">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L13.196 5.232z" /></svg>
+                    </button>
+                </div>
+                 <a href="{% url 'my_orders' %}" class="block mt-3 text-sm text-gray-700 hover:bg-gray-100 rounded-md py-2 px-3">My Orders</a>
+             </div>
+             {% endif %}
+             </div>
+        </div>
+    </header>
+
+    <main>
+
+         
+      {% if customer %}
+    <div id="edit-profile-modal" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center hidden z-[100] p-4 transition-all duration-300">
+        <div class="bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-6 w-full max-w-lg transform transition-all duration-300 scale-100">
+            <div class="flex justify-between items-center border-b border-gray-200/60 pb-3 mb-4">
+                <h3 class="text-xl font-extrabold text-[#87267e]">Edit Profile</h3>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-800 text-2xl transition">&times;</button>
+            </div>
+            <form action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-gray-700 ml-1">Full Name</label>
+                    <input type="text" id="name" name="name" value="{{ customer.name }}" required class="mt-1 block w-full bg-white/70 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#87267e]/30 focus:border-[#87267e] transition-all shadow-sm">
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-semibold text-gray-700 ml-1">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" value="{{ customer.phone }}" required class="mt-1 block w-full bg-white/70 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#87267e]/30 focus:border-[#87267e] transition-all shadow-sm">
+                </div>
+                <div>
+                    <label for="address" class="block text-sm font-semibold text-gray-700 ml-1">Address</label>
+                    <textarea id="address" name="address" rows="3" required class="mt-1 block w-full bg-white/70 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#87267e]/30 focus:border-[#87267e] transition-all shadow-sm">{{ customer.address }}</textarea>
+                </div>
+                <div class="bg-white/50 p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col">
+                    <label for="photo" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Update Profile Photo</label>
+                    <input type="file" id="photo" name="photo" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#87267e]/10 file:text-[#87267e] hover:file:bg-[#87267e]/20 transition cursor-pointer">
+                </div>
+                <div class="pt-2 flex space-x-4">
+                    <button type="submit" class="w-full bg-[#87267e] text-white font-bold py-3 px-4 rounded-xl hover:bg-[#6c1e65] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                        Save Changes
+                    </button>
+                     <button type="button" id="cancel-edit-btn" class="w-full bg-white text-gray-700 font-bold py-3 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 hover:shadow shadow-sm transition-all duration-300">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    
+        <!-- Ultra-Premium Hero Banner Section -->
+        <section class="slider-container rounded-b-[3.5rem] overflow-hidden shadow-[0_20px_60px_rgba(135,38,126,0.25)] relative z-10 border-b border-white/20">
+            <!-- Trust Badge Overlay -->
+            <div class="absolute top-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none hidden md:block">
+                <div class="glass-pill px-6 py-2 rounded-full border border-amber-300/40 text-amber-200 font-semibold text-xs tracking-wider uppercase flex items-center gap-2 shadow-lg backdrop-blur-xl bg-slate-900/60">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    ✨ 100% Authentic Kerala Kudumbashree Heritage • Direct Source
+                </div>
+            </div>
+
+            <div class="slider-wrapper">
+                <!-- Slide 1 -->
+                <div class="slide" style="background-image: url('{% static "img/img1.jpg" %}');">
+                    <div class="slide-content flex items-center p-6 md:p-16 lg:p-20 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent">
+                        <div class="max-w-2xl text-left space-y-5">
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-300 font-bold text-xs tracking-widest uppercase">
+                                ✨ EMPOWERING WOMEN & HERITAGE
+                            </span>
+                            <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white drop-shadow-lg tracking-tight font-heading">
+                                Handcrafted Excellence, <br><span class="text-amber-300">Direct to Your Doorstep</span>
+                            </h1>
+                            <p class="text-base md:text-lg text-slate-100 font-medium leading-relaxed max-w-xl">Experience authentic Kerala recipes, artisanal crafts, and organic wellness curated by Kudumbashree micro-entrepreneurs.</p>
+                            <div class="pt-2 flex flex-wrap items-center gap-4">
+                                <a href="{% url 'products' %}" class="bg-[#87267e] hover:bg-[#6c1e65] text-white font-extrabold py-3.5 px-8 rounded-full shadow-lg hover:shadow-xl hover:shadow-[#87267e]/40 transition-all duration-300 transform hover:-translate-y-0.5 text-sm">
+                                    Explore Store Catalog →
+                                </a>
+                                <a href="{% url 'about' %}" class="bg-white/20 hover:bg-white/30 text-white font-bold py-3.5 px-7 rounded-full border border-white/40 transition-all duration-300 text-sm">
+                                    Our Impact Story
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="slide" style="background-image: url('{% static "img/img2.jpg" %}');">
+                    <div class="slide-content flex items-center p-6 md:p-16 lg:p-20 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent">
+                        <div class="max-w-2xl text-left space-y-5">
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-400/20 border border-emerald-300/40 text-emerald-300 font-bold text-xs tracking-widest uppercase">
+                                🌿 100% ORGANIC & SUSTAINABLE
+                            </span>
+                            <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white drop-shadow-lg tracking-tight font-heading">
+                                Pure Traditional Taste, <br><span class="text-emerald-300">Chemical Free</span>
+                            </h1>
+                            <p class="text-base md:text-lg text-slate-100 font-medium leading-relaxed max-w-xl">Stone-ground spices, cold-pressed oils, and traditional snacks prepared using centuries-old family recipes.</p>
+                            <div class="pt-2">
+                                <a href="{% url 'products' %}" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 text-sm">
+                                    Shop Organics Now →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="slide" style="background-image: url('{% static "img/img3.jpg" %}');">
+                    <div class="slide-content flex items-center p-6 md:p-16 lg:p-20 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent">
+                        <div class="max-w-2xl text-left space-y-5">
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-300 font-bold text-xs tracking-widest uppercase">
+                                🎨 TRADITIONAL CRAFTSMANSHIP
+                            </span>
+                            <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white drop-shadow-lg tracking-tight font-heading">
+                                Artistry & Handlooms, <br><span class="text-amber-300">Made With Passion</span>
+                            </h1>
+                            <p class="text-base md:text-lg text-slate-100 font-medium leading-relaxed max-w-xl">Discover exquisite handwoven sarees, coir creations, bamboo utility items, and authentic Kerala handicrafts.</p>
+                            <div class="pt-2">
+                                <a href="{% url 'products' %}" class="inline-block bg-[#87267e] hover:bg-[#6c1e65] text-white font-extrabold py-3.5 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 text-sm">
+                                    Explore Handlooms →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-arrow left !bg-slate-900/60 !border !border-white/30 hover:!bg-slate-900/90 backdrop-blur-xl shadow-lg" id="prev-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+            </div>
+            <div class="slider-arrow right !bg-slate-900/60 !border !border-white/40 hover:!bg-slate-900/90 backdrop-blur-xl shadow-lg" id="next-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+            </div>
+            <div class="slider-nav" id="slider-dots"></div>
+        </section>
+
+        <!-- Impact Highlight Bar -->
+        <section class="relative z-20 -mt-10 container mx-auto px-4 lg:px-8">
+            <div class="glass-card bg-slate-900/80 backdrop-blur-2xl border border-white/15 rounded-3xl p-6 md:p-8 shadow-[0_15px_40px_rgba(0,0,0,0.3)] grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
+                <div class="border-r border-white/10 last:border-r-0">
+                    <p class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-100 font-heading">50,000+</p>
+                    <p class="text-xs md:text-sm text-slate-300 font-medium mt-1">Women Entrepreneurs</p>
+                </div>
+                <div class="border-r border-white/10 last:border-r-0">
+                    <p class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-200 font-heading">14 Districts</p>
+                    <p class="text-xs md:text-sm text-slate-300 font-medium mt-1">Across Kerala</p>
+                </div>
+                <div class="border-r border-white/10 last:border-r-0">
+                    <p class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200 font-heading">100%</p>
+                    <p class="text-xs md:text-sm text-slate-300 font-medium mt-1">Direct Fair Trade</p>
+                </div>
+                <div>
+                    <p class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-200 font-heading">4.9 ★</p>
+                    <p class="text-xs md:text-sm text-slate-300 font-medium mt-1">Customer Happiness</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Categories Section -->
+        <section class="py-20 relative fade-in-section bg-slate-100/60 border-y border-slate-200/80">
+            <div class="container mx-auto px-4 lg:px-8 text-center relative z-10">
+                <div class="inline-block mb-3 px-4 py-1.5 rounded-full bg-[#87267e]/10 border border-[#87267e]/20 text-[#87267e] font-bold text-xs tracking-widest uppercase shadow-sm">
+                    ✨ HERITAGE COLLECTIONS
+                </div>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight font-heading">Explore Popular Categories</h2>
+                <p class="text-slate-500 mb-14 max-w-2xl mx-auto font-medium text-base">Directly supporting 50,000+ local Kudumbashree women micro-entrepreneurs across Kerala.</p>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-5">
+                    <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Food" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                             <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 2v10"/><path d="M7 6h10"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Food & Spices</span>
+                    </a>
+                     <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Handicrafts" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                            <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.71.71a5.4 5.4 0 0 0 0 7.65l.71.71a5.4 5.4 0 0 0 7.65 0l.71-.71a5.4 5.4 0 0 0 0-7.65l-.71-.71z"/><path d="m9 15 6-6"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Handicrafts</span>
+                    </a>
+                     <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Garments" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                            <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Handlooms</span>
+                    </a>
+                    <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Organic" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                            <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s-8-4.5-8-12a8 8 0 0 1 16 0c0 7.5-8 12-8 12Z"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Organics</span>
+                    </a>
+                     <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Herbal" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                             <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4.5 8-12a8 8 0 0 0-16 0c0 7.5 8 12 8 12z"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Ayurvedic</span>
+                    </a>
+                    <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Household" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                           <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Home Care</span>
+                    </a>
+                    <!-- Category Item -->
+                    <a href="{% url 'products' %}?category=Beauty" class="group flex flex-col items-center p-6 bg-white rounded-3xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-slate-200/80 hover:border-[#87267e]/40 shadow-sm hover:shadow-xl">
+                        <div class="w-16 h-16 bg-[#87267e]/10 group-hover:bg-[#87267e] rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-inner">
+                            <svg class="w-8 h-8 text-[#87267e] group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 3l1 1-1 2-1-1-1 2-1-1-1 2-1-1-1 2-1-1-1 2-1-1-1 2-1-1v10h18V3z"/></svg>
+                        </div>
+                        <span class="font-extrabold text-slate-800 text-sm group-hover:text-[#87267e] transition-colors font-heading">Wellness</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Showcase Grid -->
+        <section class="py-20 fade-in-section relative">
+            <div class="container mx-auto px-4 lg:px-8 relative z-10">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                    <div>
+                        <div class="inline-block mb-3 px-4 py-1.5 rounded-full bg-amber-100 border border-amber-300/60 text-amber-800 font-extrabold text-xs tracking-wider uppercase shadow-sm">
+                            🔥 FEATURED SELECTION
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight font-heading">Handcrafted Best Sellers</h2>
+                    </div>
+                    <a href="{% url 'products' %}" class="mt-4 md:mt-0 inline-flex items-center gap-2 text-[#87267e] font-extrabold hover:text-[#6c1e65] text-sm group transition-all">
+                        View All Products 
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {% for product in products %}
+                    <!-- Top-Tier Product Card -->
+                    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl hover:border-[#87267e]/40 transition-all duration-500 group flex flex-col overflow-hidden relative">
+                        <a href="{% url 'product_detail' product.id %}" class="relative overflow-hidden p-3 bg-slate-50 block">
+                            <img src="{{ product.photo_url }}" alt="{{ product.product_name }}" class="w-full h-56 object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700">
+                            <span class="absolute top-6 left-6 bg-white/95 backdrop-blur-md text-[#87267e] border border-purple-100 text-[10px] font-extrabold px-3 py-1 uppercase tracking-wider rounded-full shadow-sm">✨ Kudumbashree</span>
+                            <span class="absolute top-6 right-6 bg-emerald-500 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-md">100% Genuine</span>
+                        </a>
+                        <div class="p-6 flex flex-col flex-grow text-slate-800">
+                            {% if product.has_ratings %}
+                            <div class="flex items-center space-x-1 text-amber-400 text-xs mb-2">
+                                <span>{% for i in product.full_stars %}★{% endfor %}{% if product.has_half_star %}★{% endif %}{% for i in product.empty_stars %}<span class="text-slate-200">★</span>{% endfor %}</span>
+                                <span class="text-slate-400 text-[11px] font-semibold ml-1">({{ product.avg_rating }})</span>
+                            </div>
+                            {% else %}
+                            <div class="flex items-center space-x-1 text-slate-400 text-xs mb-2">
+                                <span class="text-[11px] font-medium italic text-slate-400">No ratings yet</span>
+                            </div>
+                            {% endif %}
+                            <a href="{% url 'product_detail' product.id %}">
+                                <h3 class="text-lg font-extrabold text-slate-900 mb-1 line-clamp-1 group-hover:text-[#87267e] transition-colors font-heading">{{ product.product_name }}</h3>
+                            </a>
+                            <p class="text-xs text-slate-500 mb-5 flex-grow line-clamp-2 font-medium leading-relaxed">{{ product.description }}</p>
+                            
+                            <div class="flex items-center justify-between mb-5 pt-3 border-t border-slate-100">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Price</span>
+                                    <p class="text-[#87267e] font-extrabold text-2xl font-heading">₹{{ product.price }}</p>
+                                </div>
+                                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">In Stock</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 mt-auto">
+                                <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-btn flex-1 text-center bg-[#87267e] text-white font-extrabold py-3.5 px-4 rounded-2xl hover:bg-[#6c1e65] hover:shadow-lg hover:shadow-[#87267e]/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center space-x-2 text-sm" data-product-id="{{ product.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <span>Add to Cart</span>
+                                </a>
+                                <button type="button" class="share-trigger-btn p-3.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-[#87267e] rounded-2xl transition hover:scale-105 shrink-0" title="Share Product" data-share-title="{{ product.product_name }}" data-share-text="Check out {{ product.product_name }} on Kudumbashree Store! Only ₹{{ product.price }}" data-share-url="{% url 'product_detail' product.id %}">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 8.484a3 3 0 100-5.367 3 3 0 000 5.367z" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-span-1 sm:col-span-2 lg:col-span-4 text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+                        <svg class="mx-auto h-16 w-16 text-slate-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                        </svg>
+                        <h3 class="text-xl font-bold text-slate-800 font-heading">No products found</h3>
+                        <p class="mt-1 text-slate-500 font-medium text-sm">Please check back later for new arrivals.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modern E-Commerce Footer -->
+    <footer class="bg-slate-950 text-slate-300 relative overflow-hidden border-t border-slate-800">
+        <div class="container mx-auto px-4 lg:px-8 py-16 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8">
+                <!-- Brand Info -->
+                <div class="flex flex-col items-start">
+                    <div class="bg-white p-2.5 rounded-2xl shadow-md mb-4 border border-slate-800">
+                        <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12 object-contain">
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white mb-2 tracking-tight font-heading">Kudumbashree Store</h3>
+                    <p class="text-slate-400 font-medium text-sm leading-relaxed mb-4">Empowering over 50,000 women micro-entrepreneurs across Kerala through authentic, direct-to-consumer heritage commerce.</p>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">🌿 Government Recognized Initiative</span>
+                </div>
+
+                <!-- Navigation Links -->
+                <div>
+                    <h4 class="font-extrabold text-white mb-4 text-base font-heading">Quick Navigation</h4>
+                    <ul class="space-y-3 font-semibold text-sm text-slate-400">
+                        <li><a href="{% url 'customer_dashboard' %}" class="hover:text-amber-400 transition-colors">Home Store</a></li>
+                        <li><a href="{% url 'products' %}" class="hover:text-amber-400 transition-colors">Catalog Products</a></li>
+                        <li><a href="{% url 'community' %}" class="hover:text-amber-400 transition-colors">Community Feed</a></li>
+                        <li><a href="{% url 'about' %}" class="hover:text-amber-400 transition-colors">Empowerment Story</a></li>
+                        <li><a href="{% url 'my_orders' %}" class="hover:text-amber-400 transition-colors">Order Tracking</a></li>
+                    </ul>
+                </div>
+
+                <!-- Category Map -->
+                <div>
+                     <h4 class="font-extrabold text-white mb-4 text-base font-heading">Shop Categories</h4>
+                    <ul class="space-y-3 font-semibold text-sm text-slate-400">
+                        <li><a href="{% url 'products' %}?category=Food" class="hover:text-amber-400 transition-colors">Traditional Food & Spices</a></li>
+                        <li><a href="{% url 'products' %}?category=Handicrafts" class="hover:text-amber-400 transition-colors">Artisanal Handicrafts</a></li>
+                        <li><a href="{% url 'products' %}?category=Garments" class="hover:text-amber-400 transition-colors">Handloom Sarees & Textiles</a></li>
+                        <li><a href="{% url 'products' %}?category=Organic" class="hover:text-amber-400 transition-colors">Organic Wellness & Organics</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter & Trust Pay -->
+                <div>
+                    <h4 class="font-extrabold text-white mb-4 text-base font-heading">Subscribe for Offers</h4>
+                    <p class="text-slate-400 font-medium text-xs mb-4">Receive fresh catalog arrivals, festive discount codes, and artisan stories directly.</p>
+                    <form class="flex relative shadow-lg mb-6">
+                        <input type="email" placeholder="Enter your email..." class="w-full pl-4 pr-12 py-3 bg-slate-900 border border-slate-800 text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#87267e] focus:outline-none">
+                        <button type="submit" class="absolute right-1 top-1 bottom-1 bg-[#87267e] hover:bg-[#6c1e65] text-white px-4 rounded-xl transition shadow-md font-bold text-xs">
+                            Join
+                        </button>
+                    </form>
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <span>🔒 100% Secure Payment:</span>
+                        <span class="font-bold text-slate-200">UPI • Cards • COD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 border-t border-slate-900 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 font-semibold tracking-wide">
+                <p>&copy; 2026 Kudumbashree State Poverty Eradication Mission. All rights reserved.</p>
+                <div class="mt-4 md:mt-0 space-x-6">
+                    <a href="#" class="hover:text-slate-300 transition">Terms of Service</a>
+                    <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-300 transition">Fair Trade Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Universal Social Media Share Modal -->
+    <div id="social-share-modal" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center hidden z-[110] p-4 transition-all duration-300">
+        <div class="bg-white/95 backdrop-blur-xl border border-white/60 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] p-6 md:p-8 w-full max-w-md transform transition-all duration-300 scale-100">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-5">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-2xl bg-[#87267e]/10 text-[#87267e] flex items-center justify-center font-bold">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 font-heading">Share Product</h3>
+                </div>
+                <button id="close-share-modal-btn" class="text-slate-400 hover:text-slate-800 text-2xl transition">&times;</button>
+            </div>
+            
+            <p class="text-xs font-medium text-slate-500 mb-6">Share this authentic Kudumbashree product via social media or messaging platforms:</p>
+            
+            <div class="grid grid-cols-2 gap-3.5 mb-6">
+                <!-- WhatsApp -->
+                <button id="share-whatsapp-btn" class="flex items-center gap-3 p-3.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl border border-emerald-200/70 font-extrabold text-xs transition shadow-sm">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    <span>WhatsApp</span>
+                </button>
+                <!-- Facebook -->
+                <button id="share-facebook-btn" class="flex items-center gap-3 p-3.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-2xl border border-blue-200/70 font-extrabold text-xs transition shadow-sm">
+                    <i class="fab fa-facebook text-lg"></i>
+                    <span>Facebook</span>
+                </button>
+                <!-- Twitter / X -->
+                <button id="share-twitter-btn" class="flex items-center gap-3 p-3.5 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl border border-slate-300/70 font-extrabold text-xs transition shadow-sm">
+                    <i class="fab fa-x-twitter text-lg"></i>
+                    <span>X (Twitter)</span>
+                </button>
+                <!-- Copy Link -->
+                <button id="share-copy-btn" class="flex items-center gap-3 p-3.5 bg-purple-50 hover:bg-purple-100 text-[#87267e] rounded-2xl border border-purple-200/70 font-extrabold text-xs transition shadow-sm">
+                    <i class="fas fa-link text-lg"></i>
+                    <span>Copy Link</span>
+                </button>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex items-center gap-2">
+                <input type="text" id="share-url-input" readonly class="w-full text-xs text-slate-600 bg-transparent border-none focus:outline-none font-mono">
+                <button id="copy-url-badge-btn" class="text-xs bg-[#87267e] text-white px-3 py-1.5 rounded-xl font-bold hover:bg-[#6c1e65] transition whitespace-nowrap">
+                    Copy
+                </button>
+            </div>
+            
+            <div id="share-toast" class="hidden mt-4 text-center text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 py-2 rounded-xl">
+                ✓ Product link copied to clipboard!
+            </div>
+        </div>
+    </div>
+    
+    {{ cart_product_ids|json_script:"cart-ids" }}
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Scroll animation observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Hero Slider Logic
+        const sliderWrapper = document.querySelector('.slider-wrapper');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const dotsContainer = document.getElementById('slider-dots');
+
+        let currentIndex = 0;
+        let slideInterval;
+
+        function createDots() {
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.classList.add('slider-dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                    resetInterval();
+                });
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.slider-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        }
+        
+        function goToSlide(index) {
+            if (slides.length === 0) return;
+            if (index < 0) {
+                index = slides.length - 1;
+            } else if (index >= slides.length) {
+                index = 0;
+            }
+            sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
+            currentIndex = index;
+            updateDots();
+        }
+
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentIndex - 1);
+        }
+
+        function startSlider() {
+            if (slides.length > 1) {
+                slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+            }
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            startSlider();
+        }
+
+        if (slides.length > 0) {
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                resetInterval();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                resetInterval();
+            });
+            
+            createDots();
+            startSlider();
+        }
+
+
+        // Cart functionality - simplified for Django backend
+        try {
+            const cartProductIds = JSON.parse(document.getElementById('cart-ids').textContent);
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                const productId = button.dataset.productId;
+                if (cartProductIds.includes(parseInt(productId))) {
+                    button.textContent = 'Go to Cart';
+                    button.classList.remove('bg-primary', 'hover:bg-primary-dark');
+                    button.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+                    button.href = "{% url 'cart' %}";
+                }
+            });
+        } catch (e) {
+            console.error("Could not parse cart IDs:", e);
+        }
+
+
+         // Profile Dropdown & Modal Logic
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const editProfileModal = document.getElementById('edit-profile-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+        if(profileBtn) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('hidden');
+            });
+        }
+
+        if(editProfileBtn) {
+            editProfileBtn.addEventListener('click', () => {
+                editProfileModal.classList.remove('hidden');
+                profileDropdown.classList.add('hidden');
+            });
+        }
+        
+        if(closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                editProfileModal.classList.add('hidden');
+            });
+        }
+        
+        if(cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', () => {
+                editProfileModal.classList.add('hidden');
+            });
+        }
+
+        // Close dropdown if clicking outside
+        window.addEventListener('click', function(e) {
+            if (profileDropdown && !profileDropdown.classList.contains('hidden')) {
+                 if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.add('hidden');
+                }
+            }
+        });
+
+        // Profile Dropdown & Modal Logic for Mobile
+        const mobileProfileBtn = document.getElementById('mobile-profile-btn');
+        const mobileProfileDropdown = document.getElementById('mobile-profile-dropdown');
+        const mobileEditProfileBtn = document.getElementById('mobile-edit-profile-btn');
+        
+        if(mobileProfileBtn) {
+            mobileProfileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileProfileDropdown.classList.toggle('hidden');
+            });
+        }
+        
+        if(mobileEditProfileBtn) {
+            mobileEditProfileBtn.addEventListener('click', () => {
+                editProfileModal.classList.remove('hidden');
+                mobileProfileDropdown.classList.add('hidden');
+            });
+        }
+
+        //password eye
+        function togglePassword() {
+            const pwd = document.getElementById("password");
+            const eye = document.getElementById("eyeIcon");
+            const isHidden = pwd.type === "password";
+            pwd.type = isHidden ? "text" : "password";
+            eye.innerHTML = isHidden 
+        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.972 9.972 0 012.398-3.999m3.707-2.548A9.978 9.978 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.955 9.955 0 01-4.043 4.536M15 12a3 3 0 01-6 0 3 3 0 016 0z" />'
+        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+        }
+
+        // Share Modal Logic
+        const shareModal = document.getElementById('social-share-modal');
+        const closeShareModalBtn = document.getElementById('close-share-modal-btn');
+        const shareUrlInput = document.getElementById('share-url-input');
+        const shareToast = document.getElementById('share-toast');
+
+        let currentShareData = { title: '', text: '', url: window.location.href };
+
+        document.querySelectorAll('.share-trigger-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                let relUrl = this.dataset.shareUrl || window.location.href;
+                let absUrl = relUrl.startsWith('http') ? relUrl : window.location.origin + relUrl;
+
+                currentShareData = {
+                    title: this.dataset.shareTitle || document.title,
+                    text: this.dataset.shareText || '',
+                    url: absUrl
+                };
+
+                if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+                    navigator.share({
+                        title: currentShareData.title,
+                        text: currentShareData.text,
+                        url: currentShareData.url
+                    }).catch(() => {});
+                    return;
+                }
+
+                shareUrlInput.value = currentShareData.url;
+                if (shareToast) shareToast.classList.add('hidden');
+                if (shareModal) shareModal.classList.remove('hidden');
+            });
+        });
+
+        if (closeShareModalBtn && shareModal) {
+            closeShareModalBtn.addEventListener('click', () => { shareModal.classList.add('hidden'); });
+            window.addEventListener('click', (e) => {
+                if (e.target === shareModal) shareModal.classList.add('hidden');
+            });
+        }
+
+        const copyAction = () => {
+            navigator.clipboard.writeText(shareUrlInput.value).then(() => {
+                if (shareToast) {
+                    shareToast.classList.remove('hidden');
+                    setTimeout(() => { shareToast.classList.add('hidden'); }, 2500);
+                }
+            });
+        };
+
+        const shareCopyBtn = document.getElementById('share-copy-btn');
+        const copyUrlBadgeBtn = document.getElementById('copy-url-badge-btn');
+        if (shareCopyBtn) shareCopyBtn.addEventListener('click', copyAction);
+        if (copyUrlBadgeBtn) copyUrlBadgeBtn.addEventListener('click', copyAction);
+
+        const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
+        if (shareWhatsappBtn) {
+            shareWhatsappBtn.addEventListener('click', () => {
+                const text = encodeURIComponent(`${currentShareData.title}\n${currentShareData.text}\n${currentShareData.url}`);
+                window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            });
+        }
+
+        const shareFacebookBtn = document.getElementById('share-facebook-btn');
+        if (shareFacebookBtn) {
+            shareFacebookBtn.addEventListener('click', () => {
+                const url = encodeURIComponent(currentShareData.url);
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+            });
+        }
+
+        const shareTwitterBtn = document.getElementById('share-twitter-btn');
+        if (shareTwitterBtn) {
+            shareTwitterBtn.addEventListener('click', () => {
+                const text = encodeURIComponent(currentShareData.title);
+                const url = encodeURIComponent(currentShareData.url);
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+            });
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="msapplication-TileColor" content="#87267e">
+    <link rel="icon" href="{% static 'img/logo-kudumbashree.png' %}" type="image/x-icon">
+    <title>Order Successful - Kudumbashree Online Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #f4f0f6 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: rgba(135, 38, 126, 0.2); }
+        .blob-2 { bottom: 10%; right: -10%; width: 600px; height: 600px; background: rgba(135, 38, 126, 0.15); animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        .bounce-in {
+            animation: bounceIn 1s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+            opacity: 0;
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="relative text-gray-800 flex flex-col min-h-screen">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <!-- Header Section -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between py-3.5">
+                <!-- Logo -->
+                <a href="{% url 'customer_dashboard' %}" class="flex items-center space-x-3 group">
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 group-hover:border-[#87267e]/30 group-hover:shadow-md transition-all">
+                        <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-10 w-10 object-contain">
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl md:text-2xl font-extrabold text-[#87267e] tracking-tight font-heading group-hover:text-purple-900 transition-colors">K-Store</span>
+                        <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400 -mt-1">Kudumbashree</span>
+                    </div>
+                </a>
+
+                <!-- Search Bar with Category Pill Selector -->
+                <form action="{% url 'products' %}" method="get" class="hidden lg:flex items-center relative max-w-lg w-full mx-8">
+                    <div class="relative w-full flex items-center bg-slate-100/80 border border-slate-200 rounded-full focus-within:bg-white focus-within:border-[#87267e] focus-within:ring-4 focus-within:ring-[#87267e]/15 transition-all shadow-inner">
+                        <input type="text" name="q" placeholder="Search spices, handicrafts, organic food..." class="w-full pl-5 pr-12 py-2.5 text-sm font-medium bg-transparent border-none focus:outline-none text-slate-800 placeholder-slate-400">
+                        <button type="submit" class="absolute right-1.5 p-2 bg-[#87267e] hover:bg-[#6c1e65] text-white rounded-full transition-all shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-7">
+                    <a href="{% url 'customer_dashboard' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">Home</a>
+                    <a href="{% url 'products' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">Products</a>
+                    <a href="{% url 'community' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">Community Feed</a>
+                    <a href="{% url 'about' %}" class="font-semibold text-slate-600 hover:text-[#87267e] relative py-1 transition after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#87267e] hover:after:w-full">About Mission</a>
+                </nav>
+
+                <!-- Action Icons -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="{% url 'my_orders' %}" class="p-2.5 text-slate-600 hover:text-[#87267e] hover:bg-[#87267e]/10 rounded-2xl transition-all flex items-center gap-1.5" title="My Orders">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" /></svg>
+                        <span class="text-xs font-bold text-slate-600 hidden lg:inline">Orders</span>
+                    </a>
+
+                    <a href="{% url 'cart' %}" class="relative p-2.5 text-slate-600 hover:text-[#87267e] hover:bg-[#87267e]/10 rounded-2xl transition-all" aria-label="Cart">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        <span class="cart-count absolute top-1 right-1 bg-[#87267e] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ cart_item_count|default:0 }}</span>
+                    </a>
+
+                    <div class="relative">
+                        <button id="profile-btn" class="p-1 rounded-full border-2 border-transparent hover:border-[#87267e] transition" aria-label="Profile">
+                             {% if customer.photo %}
+                                <img src="{{ customer.photo.url }}" alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm">
+                            {% else %}
+                                <div class="w-9 h-9 rounded-full bg-[#87267e]/10 text-[#87267e] flex items-center justify-center font-bold text-sm border border-[#87267e]/20">
+                                    {{ customer.name|default:"U"|first|upper }}
+                                </div>
+                            {% endif %}
+                        </button>
+                        {% if customer %}
+                        <div id="profile-dropdown" class="absolute right-0 mt-3 w-72 bg-white rounded-3xl shadow-xl border border-slate-100 py-2 z-50 hidden transition-all">
+                            <div class="px-5 py-4 border-b border-slate-100">
+                                <div class="flex items-center">
+                                    {% if customer.photo %}
+                                    <img src="{{ customer.photo.url }}" alt="{{ customer.name }}" class="w-11 h-11 object-cover rounded-full mr-3 border border-slate-200">
+                                    {% else %}
+                                    <div class="w-11 h-11 rounded-full mr-3 bg-[#87267e]/10 flex items-center justify-center text-[#87267e] font-bold text-lg border border-[#87267e]/20">{{ customer.name|first|upper }}</div>
+                                    {% endif %}
+                                    <div class="overflow-hidden">
+                                        <p class="font-extrabold text-slate-800 text-sm truncate font-heading">{{ customer.name }}</p>
+                                        <p class="text-xs text-slate-400 font-medium truncate">{{ customer.phone }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1">
+                                <a href="{% url 'my_orders' %}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#87267e] transition">
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 11h14l1 12H4L5 11z" /></svg>
+                                    My Orders
+                                </a>
+                                <a href="{% url 'logout' %}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition border-t border-slate-100 mt-1">
+                                    <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                                    Sign Out
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 flex-grow flex items-center justify-center">
+        <div class="glass-panel w-full max-w-xl mx-auto rounded-[3rem] p-10 md:p-14 text-center transform transition-all shadow-[0_20px_60px_rgba(135,38,126,0.1)] relative overflow-hidden">
+            
+            <!-- Confetti / Success Background Effect -->
+            <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden rounded-[3rem]">
+                <div class="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(ellipse_at_center,rgba(74,222,128,0.1)_0%,rgba(255,255,255,0)_50%)] animate-spin-slow"></div>
+            </div>
+
+            <!-- Animated Checkmark Icon -->
+            <div class="w-28 h-28 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner relative z-10 bounce-in">
+                <div class="w-20 h-20 bg-gradient-to-tr from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
+                    <i class="fas fa-check text-4xl text-white"></i>
+                </div>
+            </div>
+            
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 relative z-10 fade-in-section" style="transition-delay: 0.2s;">Thank You!</h1>
+            
+            <div class="h-1.5 w-16 bg-gradient-to-r from-green-400 to-green-500 rounded-full mx-auto mb-6 relative z-10 fade-in-section" style="transition-delay: 0.3s;"></div>
+            
+            <p class="text-xl text-gray-700 font-bold mb-3 relative z-10 fade-in-section" style="transition-delay: 0.4s;">Your order was placed successfully.</p>
+            <p class="text-gray-500 font-medium text-md leading-relaxed max-w-sm mx-auto mb-10 relative z-10 fade-in-section" style="transition-delay: 0.5s;">
+                We're currently processing your request and will send you a confirmation email shortly. You can track your purchase in your profile.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10 fade-in-section" style="transition-delay: 0.6s;">
+                <a href="{% url 'products' %}" class="w-full sm:w-auto bg-[#87267e] text-white font-bold py-3.5 px-8 rounded-xl shadow-md hover:shadow-lg hover:shadow-[#87267e]/30 hover:-translate-y-1 transition-all duration-300">
+                    <i class="fas fa-shopping-bag mr-2"></i> Continue Shopping
+                </a>
+                <a href="{% url 'my_orders' %}" class="w-full sm:w-auto bg-white border-2 border-[#87267e] text-[#87267e] font-bold py-3.5 px-8 rounded-xl hover:bg-[#87267e]/5 hover:-translate-y-1 transition-all duration-300">
+                    <i class="fas fa-box-open mr-2"></i> Track Order
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modern E-Commerce Footer -->
+    <footer class="bg-slate-950 text-slate-300 relative overflow-hidden border-t border-slate-800 mt-auto">
+        <div class="container mx-auto px-4 lg:px-8 py-16 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8">
+                <!-- Brand Info -->
+                <div class="flex flex-col items-start">
+                    <div class="bg-white p-2.5 rounded-2xl shadow-md mb-4 border border-slate-800">
+                        <img src="{% static 'img/logo-kudumbashree.png' %}" alt="Logo" class="h-12 w-12 object-contain">
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white mb-2 tracking-tight font-heading">Kudumbashree Store</h3>
+                    <p class="text-slate-400 font-medium text-sm leading-relaxed mb-4">Empowering over 50,000 women micro-entrepreneurs across Kerala through authentic, direct-to-consumer heritage commerce.</p>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-1 rounded-full">🌿 Government Recognized Initiative</span>
+                </div>
+
+                <!-- Navigation Links -->
+                <div>
+                    <h4 class="font-extrabold text-white mb-4 text-base font-heading">Quick Navigation</h4>
+                    <ul class="space-y-3 font-semibold text-sm text-slate-400">
+                        <li><a href="{% url 'customer_dashboard' %}" class="hover:text-amber-400 transition-colors">Home Store</a></li>
+                        <li><a href="{% url 'products' %}" class="hover:text-amber-400 transition-colors">Catalog Products</a></li>
+                        <li><a href="{% url 'community' %}" class="hover:text-amber-400 transition-colors">Community Feed</a></li>
+                        <li><a href="{% url 'about' %}" class="hover:text-amber-400 transition-colors">Empowerment Story</a></li>
+                        <li><a href="{% url 'my_orders' %}" class="hover:text-amber-400 transition-colors">Order Tracking</a></li>
+                    </ul>
+                </div>
+
+                <!-- Category Map -->
+                <div>
+                     <h4 class="font-extrabold text-white mb-4 text-base font-heading">Shop Categories</h4>
+                    <ul class="space-y-3 font-semibold text-sm text-slate-400">
+                        <li><a href="{% url 'products' %}?category=Food" class="hover:text-amber-400 transition-colors">Traditional Food & Spices</a></li>
+                        <li><a href="{% url 'products' %}?category=Handicrafts" class="hover:text-amber-400 transition-colors">Artisanal Handicrafts</a></li>
+                        <li><a href="{% url 'products' %}?category=Garments" class="hover:text-amber-400 transition-colors">Handloom Sarees & Textiles</a></li>
+                        <li><a href="{% url 'products' %}?category=Organic" class="hover:text-amber-400 transition-colors">Organic Wellness & Organics</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter & Trust Pay -->
+                <div>
+                    <h4 class="font-extrabold text-white mb-4 text-base font-heading">Subscribe for Offers</h4>
+                    <p class="text-slate-400 font-medium text-xs mb-4">Receive fresh catalog arrivals, festive discount codes, and artisan stories directly.</p>
+                    <form class="flex relative shadow-lg mb-6">
+                        <input type="email" placeholder="Enter your email..." class="w-full pl-4 pr-12 py-3 bg-slate-900 border border-slate-800 text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#87267e] focus:outline-none">
+                        <button type="submit" class="absolute right-1 top-1 bottom-1 bg-[#87267e] hover:bg-[#6c1e65] text-white px-4 rounded-xl transition shadow-md font-bold text-xs">
+                            Join
+                        </button>
+                    </form>
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <span>🔒 100% Secure Payment:</span>
+                        <span class="font-bold text-slate-200">UPI • Cards • COD</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 border-t border-slate-900 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 font-semibold tracking-wide">
+                <p>&copy; 2026 Kudumbashree State Poverty Eradication Mission. All rights reserved.</p>
+                <div class="mt-4 md:mt-0 space-x-6">
+                    <a href="{% url 'about' %}" class="hover:text-slate-300 transition">About Mission</a>
+                    <a href="{% url 'products' %}" class="hover:text-slate-300 transition">Products Catalog</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Profile Dropdown Toggle
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+
+        if (profileBtn && profileDropdown) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('hidden');
+            });
+
+            window.addEventListener('click', (e) => {
+                if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        // Scroll Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
