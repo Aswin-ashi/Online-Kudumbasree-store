@@ -76,17 +76,19 @@ WSGI_APPLICATION = 'store.wsgi.application'
 
 import shutil
 
-IS_VERCEL = 'VERCEL' in os.environ
+IS_VERCEL = 'VERCEL' in os.environ or 'VERCEL_ENV' in os.environ
 
 if IS_VERCEL:
     db_source = BASE_DIR / 'db.sqlite3'
     db_target = Path('/tmp/db.sqlite3')
     if db_source.exists() and not db_target.exists():
-        shutil.copyfile(db_source, db_target)
-    
-    db_file = db_target if db_target.exists() else db_source
+        try:
+            shutil.copyfile(str(db_source), str(db_target))
+        except Exception:
+            pass
+    db_file = str(db_target)
 else:
-    db_file = BASE_DIR / 'db.sqlite3'
+    db_file = str(BASE_DIR / 'db.sqlite3')
 
 DATABASES = {
     'default': {
@@ -94,6 +96,7 @@ DATABASES = {
         'NAME': db_file,
     }
 }
+
 
 
 
