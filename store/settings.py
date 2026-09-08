@@ -74,12 +74,27 @@ WSGI_APPLICATION = 'store.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import shutil
+
+IS_VERCEL = 'VERCEL' in os.environ
+
+if IS_VERCEL:
+    db_source = BASE_DIR / 'db.sqlite3'
+    db_target = Path('/tmp/db.sqlite3')
+    if db_source.exists() and not db_target.exists():
+        shutil.copyfile(db_source, db_target)
+    
+    db_file = db_target if db_target.exists() else db_source
+else:
+    db_file = BASE_DIR / 'db.sqlite3'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': db_file,
     }
 }
+
 
 
 # Password validation
