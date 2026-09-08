@@ -116,6 +116,7 @@ def register_seller(request):
 
 # --- Login / Logout ---
 def login_view(request):
+    next_url = request.POST.get('next') or request.GET.get('next') or ''
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -123,9 +124,11 @@ def login_view(request):
         # --- Admin Login ---
         if username == 'admin' and password == 'adminpass':
             request.session['user_type'] = 'admin'
-            request.session['user_id'] = 0   # Add this line
+            request.session['user_id'] = 0
             request.session.modified = True
             messages.success(request, 'Welcome Admin!')
+            if next_url:
+                return redirect(next_url)
             return redirect('admin_dashboard')
 
         # --- Customer Login ---
@@ -135,6 +138,8 @@ def login_view(request):
                 request.session['user_type'] = 'customer'
                 request.session['user_id'] = customer.id
                 messages.success(request, f'Welcome {customer.name}!')
+                if next_url:
+                    return redirect(next_url)
                 return redirect('customer_dashboard')
         except Customer.DoesNotExist:
             pass
@@ -146,14 +151,17 @@ def login_view(request):
                 request.session['user_type'] = 'seller'
                 request.session['user_id'] = seller.id
                 messages.success(request, f'Welcome {seller.name}!')
+                if next_url:
+                    return redirect(next_url)
                 return redirect('seller_dashboard')
         except Seller.DoesNotExist:
             pass
 
         messages.error(request, 'Invalid credentials or seller not approved.')
-        return redirect('login')
+        return render(request, 'login.html', {'next': next_url})
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', {'next': next_url})
+
 
 
 
@@ -768,13 +776,18 @@ def toggle_inspired(request, post_id):
 
 def my_orders(request):
     user_type, customer = get_logged_in_user(request)
-    if user_type != 'customer':
-        messages.warning(request, "Login to view orders.")
-        return redirect('login')
+    if user_type == 'seller':
+        return redirect('seller_dashboard')
+    elif user_type == 'admin':
+        return redirect('admin_dashboard')
+    elif user_type != 'customer':
+        messages.warning(request, "Please log in to view your orders.")
+        return redirect(f"/login/?next={request.path}")
 
     orders = Order.objects.filter(customer=customer).order_by('-created_at')
     cart_data = get_cart_context(customer)
     return render(request, 'myorders.html', {'orders': orders, 'cart_item_count': cart_data['cart_item_count'], 'customer': customer})
+
 
 def order_detail(request, order_id):
     user_type, customer = get_logged_in_user(request)
