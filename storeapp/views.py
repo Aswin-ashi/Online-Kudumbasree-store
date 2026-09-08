@@ -1,6 +1,8 @@
 import os
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.http import JsonResponse
+
 from .models import Customer, Seller, CartItem, Product, Feedback, Order, OrderItem, Payment, CommunityPost
 from django.contrib import messages
 from decimal import Decimal
@@ -782,7 +784,8 @@ def my_orders(request):
         return redirect('admin_dashboard')
     elif user_type != 'customer':
         messages.warning(request, "Please log in to view your orders.")
-        return redirect(f"/login/?next={request.path}")
+        return redirect(f"{reverse('login')}?next={request.path}")
+
 
     orders = Order.objects.filter(customer=customer).order_by('-created_at')
     cart_data = get_cart_context(customer)

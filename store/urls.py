@@ -22,7 +22,9 @@ from django.conf import settings
 
 urlpatterns = [
     path('', views.login_view, name='login'), # Set login as the root
+    path('login/', views.login_view, name='login_alias'),
     path('logout/', views.logout_view, name='logout'),
+
     path('register/customer/', views.register_customer, name='register_customer'),
     path('register/seller/', views.register_seller, name='register_seller'),
     
