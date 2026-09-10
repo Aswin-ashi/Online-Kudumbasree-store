@@ -70,16 +70,28 @@ def register_customer(request):
             messages.error(request, f'Username "{username}" is already taken.')
             return redirect('register_customer')
 
-        Customer.objects.create(
-            name=name,
-            username=username,
-            email=email,
-            password=password,
-            address=address,
-            phone=phone,
-            age=age,
-            photo=photo
-        )
+        try:
+            Customer.objects.create(
+                name=name,
+                username=username,
+                email=email,
+                password=password,
+                address=address,
+                phone=phone,
+                age=age,
+                photo=photo
+            )
+        except OSError:
+            Customer.objects.create(
+                name=name,
+                username=username,
+                email=email,
+                password=password,
+                address=address,
+                phone=phone,
+                age=age,
+                photo=None
+            )
         messages.success(request, 'Registration successful! Please log in.')
         return redirect('login')
 
@@ -106,10 +118,16 @@ def register_seller(request):
             messages.error(request, f'The email address "{email}" is already in use.')
             return redirect('register_seller')
 
-        Seller.objects.create(
-            name=name, username=username, password=password, address=address, email=email,
-            phone=phone, kudumbasree_details=kudumbasree_details, passbook=passbook, is_approved=False
-        )
+        try:
+            Seller.objects.create(
+                name=name, username=username, password=password, address=address, email=email,
+                phone=phone, kudumbasree_details=kudumbasree_details, passbook=passbook, is_approved=False
+            )
+        except OSError:
+            Seller.objects.create(
+                name=name, username=username, password=password, address=address, email=email,
+                phone=phone, kudumbasree_details=kudumbasree_details, passbook=None, is_approved=False
+            )
         messages.success(request, 'Seller request submitted! Await admin approval.')
         return redirect('login')
 
@@ -295,7 +313,10 @@ def add_post(request):
             messages.error(request, "You must provide a description, an image, or both.")
             return redirect('admin_dashboard')
 
-        CommunityPost.objects.create(description=description, image=image)
+        try:
+            CommunityPost.objects.create(description=description, image=image)
+        except OSError:
+            CommunityPost.objects.create(description=description, image=None)
         messages.success(request, "Community post created successfully.")
     return redirect('admin_dashboard')
 

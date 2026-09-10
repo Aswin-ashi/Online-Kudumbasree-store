@@ -11,7 +11,7 @@ class Customer(models.Model):
     email = models.EmailField(unique=True) 
     phone = models.CharField(max_length=20)
     age = models.IntegerField()
-    photo = models.ImageField(upload_to='customer_photos/')
+    photo = models.ImageField(upload_to='customer_photos/', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -27,7 +27,7 @@ class Seller(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
     kudumbasree_details = models.CharField(max_length=90)
-    passbook = models.ImageField(upload_to='seller_passbooks/')
+    passbook = models.ImageField(upload_to='seller_passbooks/', blank=True, null=True)
     is_approved = models.BooleanField(default=False)
 
     def __str__(self):

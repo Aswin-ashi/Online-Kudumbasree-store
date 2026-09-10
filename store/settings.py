@@ -144,7 +144,15 @@ WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = True
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if IS_VERCEL:
+    MEDIA_ROOT = os.path.join('/tmp', 'media')
+    try:
+        os.makedirs(MEDIA_ROOT, exist_ok=True)
+    except Exception:
+        pass
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 
