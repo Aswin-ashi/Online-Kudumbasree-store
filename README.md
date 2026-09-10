@@ -90,8 +90,8 @@ store/
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Aswin-ashi/Demo-Online-Kudumbasree-store-.git
-   cd Demo-Online-Kudumbasree-store-/store
+   git clone https://github.com/Aswin-ashi/Online-Kudumbasree-store.git
+   cd Online-Kudumbasree-store/store
    ```
 
 2. **Create & Activate a Virtual Environment**
@@ -137,4 +137,4 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Aswin-ashi/Demo-Online-Kudumbasree-store-/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Aswin-ashi/Online-Kudumbasree-store/issues).
